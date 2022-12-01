@@ -19,6 +19,10 @@ from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from .NGCFModel import NGCFModel
 
+import random
+
+from torch_sparse import SparseTensor
+
 
 class NGCF(RecMixin, BaseRecommenderModel):
     r"""
@@ -53,6 +57,7 @@ class NGCF(RecMixin, BaseRecommenderModel):
           node_dropout: ()
           message_dropout: (0.1,)
     """
+
     @init_charger
     def __init__(self, data, config, params, *args, **kwargs):
         ######################################
@@ -75,6 +80,13 @@ class NGCF(RecMixin, BaseRecommenderModel):
         row, col = data.sp_i_train.nonzero()
         col = [c + self._num_users for c in col]
         self.edge_index = np.array([row, col])
+
+        self.adj = SparseTensor(row=torch.cat([torch.tensor(self.edge_index[0], dtype=torch.int64),
+                                               torch.tensor(self.edge_index[1], dtype=torch.int64)], dim=0),
+                                col=torch.cat([torch.tensor(self.edge_index[1], dtype=torch.int64),
+                                               torch.tensor(self.edge_index[0], dtype=torch.int64)], dim=0),
+                                sparse_sizes=(self._num_users + self._num_items,
+                                              self._num_users + self._num_items))
 
         self._model = NGCFModel(
             num_users=self._num_users,
@@ -104,10 +116,24 @@ class NGCF(RecMixin, BaseRecommenderModel):
             loss = 0
             steps = 0
             self._model.train()
+            if self._node_dropout > 0:
+                users_to_drop = random.sample(self.users, round(self._num_users * self._node_dropout))
+                items_to_drop = random.sample(self.items, round(self._num_items * self._node_dropout))
+                mask_user = ~np.isin(self.edge_index[0], list(users_to_drop))
+                mask_item = ~np.isin(self.edge_index[1], list(items_to_drop))
+                sampled_edge_index = self.edge_index[:, mask_user & mask_item]
+                sampled_edge_index = torch.tensor(sampled_edge_index, dtype=torch.int64)
+                sampled_adj = SparseTensor(row=torch.cat([sampled_edge_index[0], sampled_edge_index[1]], dim=0),
+                                           col=torch.cat([sampled_edge_index[1], sampled_edge_index[0]], dim=0),
+                                           sparse_sizes=(self._num_users + self._num_items,
+                                                         self._num_users + self._num_items))
             with tqdm(total=int(self._data.transactions // self._batch_size), disable=not self._verbose) as t:
                 for batch in self._sampler.step(self._data.transactions, self._batch_size):
                     steps += 1
-                    loss += self._model.train_step(batch)
+                    if self._node_dropout > 0:
+                        loss += self._model.train_step(batch, sampled_adj)
+                    else:
+                        loss += self._model.train_step(batch, self.adj)
                     t.set_postfix({'loss': f'{loss / steps:.5f}'})
                     t.update()
 
@@ -142,7 +168,7 @@ class NGCF(RecMixin, BaseRecommenderModel):
             self._results.append(result_dict)
 
             if it is not None:
-                self.logger.info(f'Epoch {(it + 1)}/{self._epochs} loss {loss/(it + 1):.5f}')
+                self.logger.info(f'Epoch {(it + 1)}/{self._epochs} loss {loss / (it + 1):.5f}')
             else:
                 self.logger.info(f'Finished')
 

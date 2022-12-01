@@ -75,10 +75,6 @@ class NGCFModel(torch.nn.Module, ABC):
         self.dropout_layers = []
 
         for layer in range(self.n_layers):
-            propagation_network_list.append((NodeDropout(self.node_dropout,
-                                                         self.num_users,
-                                                         self.num_items),
-                                             'edge_index -> edge_index'))
             propagation_network_list.append((NGCFLayer(self.weight_size_list[layer],
                                                        self.weight_size_list[layer + 1],
                                                        normalize=False), 'x, edge_index -> x'))
@@ -95,19 +91,12 @@ class NGCFModel(torch.nn.Module, ABC):
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
-    def propagate_embeddings(self):
+    def propagate_embeddings(self, adj):
         ego_embeddings = torch.cat((self.Gu.weight.to(self.device), self.Gi.weight.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
         embedding_idx = 0
 
-        for layer in range(0, self.n_layers * 2, 2):
-            dropout_edge_index = list(
-                self.propagation_network.children()
-            )[layer](self.edge_index.to(self.device))
-            adj = SparseTensor(row=torch.cat([dropout_edge_index[0], dropout_edge_index[1]], dim=0),
-                               col=torch.cat([dropout_edge_index[1], dropout_edge_index[0]], dim=0),
-                               sparse_sizes=(self.num_users + self.num_items,
-                                             self.num_users + self.num_items))
+        for layer in range(self.n_layers):
             all_embeddings += [torch.nn.functional.normalize(self.dropout_layers[embedding_idx](list(
                 self.propagation_network.children()
             )[layer + 1](all_embeddings[embedding_idx].to(self.device), adj.to(self.device))), p=2, dim=1)]
@@ -132,8 +121,8 @@ class NGCFModel(torch.nn.Module, ABC):
         return torch.matmul(self.user_embeddings[start: stop].to(self.device),
                             torch.transpose(self.item_embeddings.to(self.device), 0, 1))
 
-    def train_step(self, batch):
-        gu, gi = self.propagate_embeddings()
+    def train_step(self, batch, adj):
+        gu, gi = self.propagate_embeddings(adj)
         user, pos, neg = batch
         xu_pos, gamma_u, gamma_i_pos = self.forward(inputs=(gu[user], gi[pos]))
         xu_neg, _, gamma_i_neg = self.forward(inputs=(gu[user], gi[neg]))
