@@ -126,34 +126,34 @@ experiment:
 #        mode: auto
 #        monitor: Recall@20
 #        verbose: True
-    external.UltraGCN:
-      meta:
-        hyper_opt_alg: grid
-        verbose: True
-        save_weights: False
-        validation_rate: 1
-        validation_metric: Recall@20
-        restore: False
-      lr: 0.0001
-      epochs: 1000
-      factors: 64
-      batch_size: 1024
-      g: 0.0001
-      l: [0.1, 1.0, 2.0, 3, 3.5]
-      w1: 1e-7
-      w2: 1.0
-      w3: 1e-7
-      w4: 1.0
-      ii_n_n: 10
-      n_n_w: [75, 300, 800, 1500]
-      s_s_p: [True, False]
-      i_w: 0.0001
-      seed: 123
-      early_stopping:
-        patience: 50
-        mode: auto
-        monitor: Recall@20
-        verbose: True
+#    external.UltraGCN:
+#      meta:
+#        hyper_opt_alg: grid
+#        verbose: True
+#        save_weights: False
+#        validation_rate: 1
+#        validation_metric: Recall@20
+#        restore: False
+#      lr: 0.0001
+#      epochs: 1000
+#      factors: 64
+#      batch_size: 1024
+#      g: 0.0001
+#      l: [0.1, 1.0, 2.0, 3, 3.5]
+#      w1: 1e-7
+#      w2: 1.0
+#      w3: 1e-7
+#      w4: 1.0
+#      ii_n_n: 10
+#      n_n_w: [75, 300, 800, 1500]
+#      s_s_p: [True, False]
+#      i_w: 0.0001
+#      seed: 123
+#      early_stopping:
+#        patience: 50
+#        mode: auto
+#        monitor: Recall@20
+#        verbose: True
     external.GFCF:
       meta:
         hyper_opt_alg: grid
