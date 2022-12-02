@@ -12,6 +12,8 @@ from .LightGCNModel import LightGCNModel
 
 from torch_sparse import SparseTensor
 
+import math
+
 
 class LightGCN(RecMixin, BaseRecommenderModel):
     r"""

@@ -12,6 +12,8 @@ from .SGLModel import SGLModel
 
 from torch_sparse import SparseTensor
 
+import math
+
 import random
 
 

@@ -19,6 +19,8 @@ from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.recommender_utils_mixin import RecMixin
 from .NGCFModel import NGCFModel
 
+import math
+
 import random
 
 from torch_sparse import SparseTensor
