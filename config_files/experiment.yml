@@ -82,27 +82,27 @@ experiment:
 #        mode: auto
 #        monitor: Recall@20
 #        verbose: True
-    external.LRGCCF:
-      meta:
-        hyper_opt_alg: grid
-        verbose: True
-        save_weights: False
-        validation_rate: 1
-        validation_metric: Recall@20
-        restore: False
-      lr: 0.001
-      epochs: 1000
-      factors: 64
-      batch_size: 1024
-      l_w: 0.01
-      n_layers: [1, 2, 3, 4]
-      normalize: [True, False]
-      seed: 123
-      early_stopping:
-        patience: 50
-        mode: auto
-        monitor: Recall@20
-        verbose: True
+#    external.LRGCCF:
+#      meta:
+#        hyper_opt_alg: grid
+#        verbose: True
+#        save_weights: False
+#        validation_rate: 1
+#        validation_metric: Recall@20
+#        restore: False
+#      lr: 0.001
+#      epochs: 1000
+#      factors: 64
+#      batch_size: 1024
+#      l_w: 0.01
+#      n_layers: [1, 2, 3, 4]
+#      normalize: [True, False]
+#      seed: 123
+#      early_stopping:
+#        patience: 50
+#        mode: auto
+#        monitor: Recall@20
+#        verbose: True
     external.SGL:
       meta:
         hyper_opt_alg: grid
