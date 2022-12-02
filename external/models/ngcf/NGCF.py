@@ -88,6 +88,8 @@ class NGCF(RecMixin, BaseRecommenderModel):
                                                torch.tensor(self.edge_index[0], dtype=torch.int64)], dim=0),
                                 sparse_sizes=(self._num_users + self._num_items,
                                               self._num_users + self._num_items))
+        self.users = list(range(self._num_users))
+        self.items = list(range(self._num_items))
 
         self._model = NGCFModel(
             num_users=self._num_users,
