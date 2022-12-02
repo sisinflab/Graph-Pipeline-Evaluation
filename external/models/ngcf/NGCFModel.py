@@ -10,7 +10,6 @@ __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it, daniele.malite
 from abc import ABC
 
 from .NGCFLayer import NGCFLayer
-from .NodeDropout import NodeDropout
 import torch
 import torch_geometric
 import numpy as np
