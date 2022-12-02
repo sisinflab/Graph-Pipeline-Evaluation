@@ -59,7 +59,7 @@ class LightGCN(RecMixin, BaseRecommenderModel):
             ("_factors", "factors", "factors", 64, int, None),
             ("_l_w", "l_w", "l_w", 0.01, float, None),
             ("_n_layers", "n_layers", "n_layers", 1, int, None),
-            ("_normalize", "normalize", "normalize", True, None)
+            ("_normalize", "normalize", "normalize", True, bool, None)
         ]
         self.autoset_params()
 
