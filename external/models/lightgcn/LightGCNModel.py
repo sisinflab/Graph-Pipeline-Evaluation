@@ -16,6 +16,7 @@ class LightGCNModel(torch.nn.Module, ABC):
                  l_w,
                  n_layers,
                  adj,
+                 normalize,
                  random_seed,
                  name="LightGCN",
                  **kwargs
@@ -41,6 +42,7 @@ class LightGCNModel(torch.nn.Module, ABC):
         self.weight_size_list = [self.embed_k] * (self.n_layers + 1)
         self.alpha = torch.tensor([1 / (k + 1) for k in range(len(self.weight_size_list))])
         self.adj = adj
+        self.normalize = normalize
 
         self.Gu = torch.nn.Parameter(
             torch.nn.init.xavier_normal_(torch.empty((self.num_users, self.embed_k))))
@@ -51,8 +53,8 @@ class LightGCNModel(torch.nn.Module, ABC):
 
         propagation_network_list = []
 
-        for layer in range(self.n_layers):
-            propagation_network_list.append((LGConv(), 'x, edge_index -> x'))
+        for _ in range(self.n_layers):
+            propagation_network_list.append((LGConv(normalize=self.normalize), 'x, edge_index -> x'))
 
         self.propagation_network = torch_geometric.nn.Sequential('x, edge_index', propagation_network_list)
         self.propagation_network.to(self.device)

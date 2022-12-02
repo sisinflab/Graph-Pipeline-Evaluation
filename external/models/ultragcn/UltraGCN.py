@@ -39,13 +39,15 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
             ("_w4", "w4", "w4", 1, float, None),
             ("_ii_n_n", "ii_n_n", "ii_n_n", 10, int, None),
             ("_i_w", "i_w", "i_w", 1e-3, float, None),
-            ("_n_n", "n_n", "n_n", 200, int, None),
-            ("_n_w", "n_w", "n_w", 200, float, None),
+            ("_n_n_w", "n_n_w", "n_n_w", 200, int, None),
             ("_g", "g", "g", 1e-4, float, None),
             ("_l", "l", "l", 2.75, float, None),
             ("_s_s_p", "s_s_p", "s_s_p", False, bool, None)
         ]
         self.autoset_params()
+
+        self._n_n = self._n_n_w
+        self._n_w = float(self._n_n_w)
 
         ii_neighbor_mat, ii_constraint_mat = self.get_ii_constraint_mat(data.sp_i_train, self._ii_n_n)
 
@@ -124,6 +126,10 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
                     loss += self._model.train_step((torch.from_numpy(users),
                                                     torch.from_numpy(pos_items),
                                                     neg_items))
+
+                    if math.isnan(loss) or math.isinf(loss) or (not loss):
+                        break
+
                     t.set_postfix({'loss': f'{loss / steps:.5f}'})
                     t.update()
 

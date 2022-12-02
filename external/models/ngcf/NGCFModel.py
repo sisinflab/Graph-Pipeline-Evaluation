@@ -31,6 +31,7 @@ class NGCFModel(torch.nn.Module, ABC):
                  node_dropout,
                  message_dropout,
                  edge_index,
+                 normalize,
                  random_seed,
                  name="NGFC",
                  **kwargs
@@ -58,6 +59,7 @@ class NGCFModel(torch.nn.Module, ABC):
         self.message_dropout = message_dropout
         self.weight_size_list = [self.embed_k] + ([self.weight_size] * self.n_layers)
         self.edge_index = torch.tensor(edge_index, dtype=torch.int64)
+        self.normalize = normalize
 
         self.adj = SparseTensor(row=torch.cat([self.edge_index[0], self.edge_index[1]], dim=0),
                                 col=torch.cat([self.edge_index[1], self.edge_index[0]], dim=0),
@@ -77,7 +79,7 @@ class NGCFModel(torch.nn.Module, ABC):
         for layer in range(self.n_layers):
             propagation_network_list.append((NGCFLayer(self.weight_size_list[layer],
                                                        self.weight_size_list[layer + 1],
-                                                       normalize=False), 'x, edge_index -> x'))
+                                                       normalize=self.normalize), 'x, edge_index -> x'))
             self.dropout_layers.append(torch.nn.Dropout(p=self.message_dropout))
 
         self.propagation_network = torch_geometric.nn.Sequential('x, edge_index', propagation_network_list)

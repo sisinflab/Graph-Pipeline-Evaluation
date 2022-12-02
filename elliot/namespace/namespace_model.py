@@ -64,7 +64,7 @@ _backend = 'backend'
 
 
 class NameSpaceModel:
-    def __init__(self, config_path, base_folder_path_elliot, base_folder_path_config):
+    def __init__(self, config_path, base_folder_path_elliot, base_folder_path_config, **kwargs):
         self.base_namespace = SimpleNamespace()
 
         self._base_folder_path_elliot = base_folder_path_elliot
@@ -72,6 +72,9 @@ class NameSpaceModel:
 
         self.config_file = open(config_path)
         self.config = load(self.config_file, Loader=FullLoader)
+
+        self.config['experiment']['gpu'] = kwargs["gpu"]
+        self.config['experiment']['dataset'] = kwargs["dataset"]
 
         os.environ['CUDA_VISIBLE_DEVICES'] = str(self.config[_experiment].get(_gpu, -1))
 

@@ -26,6 +26,7 @@ class LRGCCFModel(torch.nn.Module, ABC):
                  n_layers,
                  adj,
                  random_seed,
+                 normalize,
                  name="LRGCCF",
                  **kwargs
                  ):
@@ -49,6 +50,7 @@ class LRGCCFModel(torch.nn.Module, ABC):
         self.n_layers = n_layers
         self.weight_size_list = [self.embed_k] * (self.n_layers + 1)
         self.adj = adj
+        self.normalize = normalize
 
         self.Gu = torch.nn.Embedding(self.num_users, self.embed_k)
         torch.nn.init.normal_(self.Gu.weight, std=0.01)
@@ -59,8 +61,8 @@ class LRGCCFModel(torch.nn.Module, ABC):
 
         propagation_network_list = []
 
-        for layer in range(self.n_layers):
-            propagation_network_list.append((LGConv(normalize=False), 'x, edge_index -> x'))
+        for _ in range(self.n_layers):
+            propagation_network_list.append((LGConv(normalize=self.normalize), 'x, edge_index -> x'))
 
         self.propagation_network = torch_geometric.nn.Sequential('x, edge_index', propagation_network_list)
         self.propagation_network.to(self.device)

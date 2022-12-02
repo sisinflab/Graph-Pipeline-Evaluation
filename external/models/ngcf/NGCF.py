@@ -69,7 +69,8 @@ class NGCF(RecMixin, BaseRecommenderModel):
             ("_n_layers", "n_layers", "n_layers", 3, int, None),
             ("_weight_size", "weight_size", "weight_size", 64, int, None),
             ("_node_dropout", "node_dropout", "node_dropout", 0.0, float, None),
-            ("_message_dropout", "message_dropout", "message_dropout", 0.5, float, None)
+            ("_message_dropout", "message_dropout", "message_dropout", 0.5, float, None),
+            ("_normalize", "normalize", "normalize", True, bool, None)
         ]
         self.autoset_params()
 
@@ -99,6 +100,7 @@ class NGCF(RecMixin, BaseRecommenderModel):
             node_dropout=self._node_dropout,
             message_dropout=self._message_dropout,
             edge_index=self.edge_index,
+            normalize=self._normalize,
             random_seed=self._seed
         )
 
@@ -134,6 +136,10 @@ class NGCF(RecMixin, BaseRecommenderModel):
                         loss += self._model.train_step(batch, sampled_adj)
                     else:
                         loss += self._model.train_step(batch, self.adj)
+
+                    if math.isnan(loss) or math.isinf(loss) or (not loss):
+                        break
+
                     t.set_postfix({'loss': f'{loss / steps:.5f}'})
                     t.update()
 

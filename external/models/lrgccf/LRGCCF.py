@@ -60,7 +60,8 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
             ("_learning_rate", "lr", "lr", 0.0005, float, None),
             ("_factors", "factors", "factors", 64, int, None),
             ("_l_w", "l_w", "l_w", 0.01, float, None),
-            ("_n_layers", "n_layers", "n_layers", 1, int, None)
+            ("_n_layers", "n_layers", "n_layers", 1, int, None),
+            ("_normalize", "normalize", "normalize", True, bool, None)
         ]
         self.autoset_params()
 
@@ -85,6 +86,7 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
             l_w=self._l_w,
             n_layers=self._n_layers,
             adj=self.adj,
+            normalize=self._normalize,
             random_seed=self._seed
         )
 
@@ -106,6 +108,10 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
                 for batch in self._sampler.step(self._data.transactions, self._batch_size):
                     steps += 1
                     loss += self._model.train_step(batch)
+
+                    if math.isnan(loss) or math.isinf(loss) or (not loss):
+                        break
+
                     t.set_postfix({'loss': f'{loss / steps:.5f}'})
                     t.update()
 
