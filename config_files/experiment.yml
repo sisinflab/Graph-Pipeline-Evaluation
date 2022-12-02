@@ -103,29 +103,29 @@ experiment:
 #        mode: auto
 #        monitor: Recall@20
 #        verbose: True
-    external.SGL:
-      meta:
-        hyper_opt_alg: grid
-        verbose: True
-        save_weights: False
-        validation_rate: 1
-        validation_metric: Recall@20
-        restore: False
-      lr: 0.001
-      epochs: 1000
-      batch_size: 1024
-      factors: 64
-      l_w: 1e-4
-      n_layers: [1, 2, 3, 4]
-      ssl_temp: [0.1, 1]
-      ssl_reg: [0.005, 1]
-      ssl_ratio: [0.1, 0.5]
-      sampling: [nd, ed, rw]
-      early_stopping:
-        patience: 50
-        mode: auto
-        monitor: Recall@20
-        verbose: True
+#    external.SGL:
+#      meta:
+#        hyper_opt_alg: grid
+#        verbose: True
+#        save_weights: False
+#        validation_rate: 1
+#        validation_metric: Recall@20
+#        restore: False
+#      lr: 0.001
+#      epochs: 1000
+#      batch_size: 1024
+#      factors: 64
+#      l_w: 1e-4
+#      n_layers: [1, 2, 3, 4]
+#      ssl_temp: [0.1, 1]
+#      ssl_reg: [0.005, 1]
+#      ssl_ratio: [0.1, 0.5]
+#      sampling: [nd, ed, rw]
+#      early_stopping:
+#        patience: 50
+#        mode: auto
+#        monitor: Recall@20
+#        verbose: True
     external.UltraGCN:
       meta:
         hyper_opt_alg: grid
