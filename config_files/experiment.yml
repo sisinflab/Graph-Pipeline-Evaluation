@@ -58,30 +58,30 @@ experiment:
 #        mode: auto
 #        monitor: Recall@20
 #        verbose: True
-    external.DGCF:
-      meta:
-        hyper_opt_alg: grid
-        verbose: True
-        save_weights: False
-        validation_rate: 1
-        validation_metric: Recall@20
-        restore: False
-      lr: 0.001
-      epochs: 1000
-      factors: 64
-      batch_size: 1024
-      l_w_bpr: [0.001, 0.00001]
-      l_w_ind: [0.001, 0.00001]
-      ind_batch_size: 1024
-      n_layers: [1, 2, 3, 4]
-      routing_iterations: 2
-      intents: [2, 4, 8, 16]
-      seed: 123
-      early_stopping:
-        patience: 50
-        mode: auto
-        monitor: Recall@20
-        verbose: True
+#    external.DGCF:
+#      meta:
+#        hyper_opt_alg: grid
+#        verbose: True
+#        save_weights: False
+#        validation_rate: 1
+#        validation_metric: Recall@20
+#        restore: False
+#      lr: 0.001
+#      epochs: 1000
+#      factors: 64
+#      batch_size: 1024
+#      l_w_bpr: [0.001, 0.00001]
+#      l_w_ind: [0.001, 0.00001]
+#      ind_batch_size: 1024
+#      n_layers: [1, 2, 3, 4]
+#      routing_iterations: 2
+#      intents: [2, 4, 8, 16]
+#      seed: 123
+#      early_stopping:
+#        patience: 50
+#        mode: auto
+#        monitor: Recall@20
+#        verbose: True
     external.LRGCCF:
       meta:
         hyper_opt_alg: grid
