@@ -9,7 +9,10 @@ experiment:
   top_k: 20
   evaluation:
     cutoffs: [20]
-    simple_metrics: [Recall]
+    simple_metrics: [Recall, Precision, nDCG, nDCGRendle2020, MRR, MAR, MAP, HR, F1, ItemCoverage, EFD, EPC, Gini, SEntropy, ACLT, APLT, ARP, PopREO, PopRSP]
+    complex_metrics:
+      - metric: ExtendedPopREO
+      - metric: ExtendedPopRSP
   gpu: -1
   external_models_path: ../external/models/__init__.py
   models:
