@@ -134,7 +134,7 @@ class RecMixin(object):
                     f.write(self.name + '\t' + str(self._params.best_iteration) + '\n')
                 self.logger.info(f"Met Early Stopping conditions: {self._early_stopping}")
                 self.logger.info(f"Best iteration: {self._params.best_iteration}")
-                self.logger.info(f"Current configuration: {current_configuration}")
+                self.logger.info(f"Current configuration: {self.name}")
                 break
             else:
                 yield iteration
