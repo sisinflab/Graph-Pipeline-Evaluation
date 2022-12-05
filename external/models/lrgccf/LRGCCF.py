@@ -102,9 +102,7 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
         if self._restore:
             return self.restore_weights()
 
-        self._params.best_iteration = 1
-
-        for it in self.iterate(self._epochs, self._params.best_iteration, self.name):
+        for it in self.iterate(self._epochs):
             loss = 0
             steps = 0
             self._model.train()

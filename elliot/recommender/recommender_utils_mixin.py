@@ -127,13 +127,13 @@ class RecMixin(object):
             val_results = np.argmax([r[self._validation_k]["val_results"][self._validation_metric] for r in self._results])
         return val_results
 
-    def iterate(self, epochs, best_iteration, current_configuration):
+    def iterate(self, epochs):
         for iteration in range(epochs):
             if self._early_stopping.stop(self._losses[:], self._results):
                 with open(self._config.path_output_rec_performance + '/best_iterations.tsv', 'a') as f:
-                    f.write(self.name + '\t' + str(best_iteration) + '\n')
+                    f.write(self.name + '\t' + str(self._params.best_iteration) + '\n')
                 self.logger.info(f"Met Early Stopping conditions: {self._early_stopping}")
-                self.logger.info(f"Best iteration: {best_iteration}")
+                self.logger.info(f"Best iteration: {self._params.best_iteration}")
                 self.logger.info(f"Current configuration: {current_configuration}")
                 break
             else:
