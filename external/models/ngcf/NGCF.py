@@ -118,7 +118,7 @@ class NGCF(RecMixin, BaseRecommenderModel):
         if self._restore:
             return self.restore_weights()
 
-        for it in self.iterate(self._epochs):
+        for it in self.iterate(self._epochs, self._params.best_iteration, self.name):
             loss = 0
             steps = 0
             self._model.train()
@@ -180,6 +180,8 @@ class NGCF(RecMixin, BaseRecommenderModel):
             if it is not None:
                 self.logger.info(f'Epoch {(it + 1)}/{self._epochs} loss {loss / (it + 1):.5f}')
             else:
+                self.logger.info(f"Best iteration: {self._params.best_iteration}")
+                self.logger.info(f"Current configuration: {self.name}")
                 self.logger.info(f'Finished')
 
             if self._save_recs:

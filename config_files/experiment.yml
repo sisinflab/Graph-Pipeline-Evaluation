@@ -9,7 +9,7 @@ experiment:
   top_k: 20
   evaluation:
     cutoffs: [20]
-    simple_metrics: [Recall, Precision, nDCG, nDCGRendle2020, MRR, MAR, MAP, HR, F1, ItemCoverage, EFD, EPC, Gini, SEntropy, ACLT, APLT, ARP, PopREO, PopRSP]
+    simple_metrics: [Recall, Precision, nDCG, MRR, MAR, MAP, HR, F1, ItemCoverage, EFD, EPC, Gini, SEntropy, ACLT, APLT, ARP, PopREO, PopRSP]
     complex_metrics:
       - metric: ExtendedPopREO
       - metric: ExtendedPopRSP
