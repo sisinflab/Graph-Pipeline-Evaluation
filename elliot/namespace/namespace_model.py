@@ -70,8 +70,11 @@ class NameSpaceModel:
         self._base_folder_path_elliot = base_folder_path_elliot
         self._base_folder_path_config = base_folder_path_config
 
-        self.config_file = open(config_path)
-        self.config = load(self.config_file, Loader=FullLoader)
+        if not kwargs["config_already_loaded"]:
+            self.config_file = open(config_path)
+            self.config = load(self.config_file, Loader=FullLoader)
+        else:
+            self.config = kwargs["config"]
 
         self.config['experiment']['gpu'] = kwargs["gpu"]
         self.config['experiment']['dataset'] = kwargs["dataset"]
