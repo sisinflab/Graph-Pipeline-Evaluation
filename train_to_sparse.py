@@ -10,5 +10,6 @@ rows = [public_to_private_users[u] for u in train[0].tolist()]
 cols = [public_to_private_items[i] for i in train[1].tolist()]
 data = [1] * len(train)
 
+
 sparse_train = csr_matrix((data, (rows, cols)), shape=(train[0].nunique(), train[1].nunique()))
 save_npz(f'data/{dataset}/train_sparse.npz', sparse_train)
