@@ -103,66 +103,66 @@ experiment:
 #        mode: auto
 #        monitor: Recall@20
 #        verbose: True
-#    external.SGL:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_rate: 1
-#        validation_metric: Recall@20
-#        restore: False
-#      lr: 0.001
-#      epochs: 1000
-#      batch_size: 1024
-#      factors: 64
-#      l_w: 1e-4
-#      n_layers: [1, 2, 3, 4]
-#      ssl_temp: [0.1, 1]
-#      ssl_reg: [0.005, 1]
-#      ssl_ratio: [0.1, 0.5]
-#      sampling: [nd, ed, rw]
-#      early_stopping:
-#        patience: 50
-#        mode: auto
-#        monitor: Recall@20
-#        verbose: True
-#    external.UltraGCN:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_rate: 1
-#        validation_metric: Recall@20
-#        restore: False
-#      lr: 0.0001
-#      epochs: 1000
-#      factors: 64
-#      batch_size: 1024
-#      g: 0.0001
-#      l: [0.1, 1.0, 2.0, 3, 3.5]
-#      w1: 1e-7
-#      w2: 1.0
-#      w3: 1e-7
-#      w4: 1.0
-#      ii_n_n: 10
-#      n_n_w: [75, 300, 800, 1500]
-#      s_s_p: [True, False]
-#      i_w: 0.0001
-#      seed: 123
-#      early_stopping:
-#        patience: 50
-#        mode: auto
-#        monitor: Recall@20
-#        verbose: True
-#    external.GFCF:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_metric: Recall@20
-#        restore: False
-#      svd_factors: [16, 32, 64, 128, 256, 512]
-#      alpha: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+    external.SGL:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 1
+        validation_metric: Recall@20
+        restore: False
+      lr: 0.001
+      epochs: 1000
+      batch_size: 1024
+      factors: 64
+      l_w: 1e-4
+      n_layers: [1, 2, 3, 4]
+      ssl_temp: [0.1, 1]
+      ssl_reg: [0.005, 1]
+      ssl_ratio: [0.1, 0.5]
+      sampling: [nd, ed, rw]
+      early_stopping:
+        patience: 50
+        mode: auto
+        monitor: Recall@20
+        verbose: True
+    external.UltraGCN:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 1
+        validation_metric: Recall@20
+        restore: False
+      lr: 0.0001
+      epochs: 1000
+      factors: 64
+      batch_size: 1024
+      g: 0.0001
+      l: [0.1, 1.0, 2.0, 3, 3.5]
+      w1: 1e-7
+      w2: 1.0
+      w3: 1e-7
+      w4: 1.0
+      ii_n_n: 10
+      n_n_w: [75, 300, 800, 1500]
+      s_s_p: [True, False]
+      i_w: 0.0001
+      seed: 123
+      early_stopping:
+        patience: 50
+        mode: auto
+        monitor: Recall@20
+        verbose: True
+    external.GFCF:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_metric: Recall@20
+        restore: False
+      svd_factors: [16, 32, 64, 128, 256, 512]
+      alpha: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
     external.SVDGCN:
       meta:
         hyper_opt_alg: grid

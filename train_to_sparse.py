@@ -1,7 +1,7 @@
 from scipy.sparse import csr_matrix, save_npz
 import pandas as pd
 
-dataset = 'allrecipes'
+dataset = 'clothing'
 
 train = pd.read_csv(f'data/{dataset}/train.tsv', sep='\t', header=None)
 public_to_private_users = {u: idx for idx, u in enumerate(train[0].unique().tolist())}
