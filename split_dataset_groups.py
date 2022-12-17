@@ -1,7 +1,12 @@
 import pandas as pd
 import numpy as np
+import argparse
 
-dataset = 'allrecipes'
+parser = argparse.ArgumentParser(description="Run split user/item groups with pareto.")
+parser.add_argument('--dataset', type=str, default='allrecipes')
+args = parser.parse_args()
+
+dataset = args.dataset
 
 train = pd.read_csv(f'data/{dataset}/train.tsv', sep='\t', header=None)
 train_80 = round(len(train) * 0.8)
@@ -28,5 +33,5 @@ for ind in item_count.index:
     if cumulative_sum >= train_80:
         item_count.at[ind, 'group'] = 1
 
-user_count[[0, 'group']].to_csv(f'data/{dataset}/user_groups.tsv', sep='\t', header=None, index=None)
-item_count[[1, 'group']].to_csv(f'data/{dataset}/item_groups.tsv', sep='\t', header=None, index=None)
+user_count[[0, 'group']].to_csv(f'data/{dataset}/user_groups_pareto.tsv', sep='\t', header=None, index=None)
+item_count[[1, 'group']].to_csv(f'data/{dataset}/item_groups_pareto.tsv', sep='\t', header=None, index=None)
