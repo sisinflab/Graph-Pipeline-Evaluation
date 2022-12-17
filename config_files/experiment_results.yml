@@ -53,3 +53,4 @@ experiment:
         save_weights: False
         validation_rate: best_iteration
         restore: False
+      seed: 123
