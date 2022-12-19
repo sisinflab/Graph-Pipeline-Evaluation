@@ -13,96 +13,100 @@ experiment:
   gpu: -1
   external_models_path: ../external/models/__init__.py
   models:
-#    external.NGCF:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_rate: 1
-#        validation_metric: Recall@20
-#        restore: False
-#      lr: 0.0001
-#      epochs: 1000
-#      factors: 64
-#      batch_size: 1024
-#      l_w: 1e-5
-#      n_layers: [1, 2, 3, 4]
-#      weight_size: 64
-#      node_dropout: [0.0, 0.4, 0.8]
-#      message_dropout: [0.0, 0.4, 0.8]
-#      normalize: [True, False]
-#      seed: 123
-#      early_stopping:
-#        patience: 50
-#        mode: auto
-#        monitor: Recall@20
-#        verbose: True
-#    external.LightGCN:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_rate: 1
-#        validation_metric: Recall@20
-#        restore: False
-#      lr: 0.001
-#      epochs: 1000
-#      factors: 64
-#      batch_size: 1024
-#      l_w: 1e-4
-#      n_layers: [1, 2, 3, 4]
-#      normalize: [True, False]
-#      seed: 123
-#      early_stopping:
-#        patience: 50
-#        mode: auto
-#        monitor: Recall@20
-#        verbose: True
-#    external.DGCF:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_rate: 1
-#        validation_metric: Recall@20
-#        restore: False
-#      lr: 0.001
-#      epochs: 1000
-#      factors: 64
-#      batch_size: 1024
-#      l_w_bpr: [0.001, 0.00001]
-#      l_w_ind: [0.001, 0.00001]
-#      ind_batch_size: 1024
-#      n_layers: [1, 2, 3, 4]
-#      routing_iterations: 2
-#      intents: [2, 4, 8, 16]
-#      seed: 123
-#      early_stopping:
-#        patience: 50
-#        mode: auto
-#        monitor: Recall@20
-#        verbose: True
-#    external.LRGCCF:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_rate: 1
-#        validation_metric: Recall@20
-#        restore: False
-#      lr: 0.001
-#      epochs: 1000
-#      factors: 64
-#      batch_size: 1024
-#      l_w: 0.01
-#      n_layers: [1, 2, 3, 4]
-#      normalize: [True, False]
-#      seed: 123
-#      early_stopping:
-#        patience: 50
-#        mode: auto
-#        monitor: Recall@20
-#        verbose: True
+    external.NGCF:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 1
+        validation_metric: Recall@20
+        restore: False
+        write_best_iterations: True
+      lr: 0.0001
+      epochs: 1000
+      factors: 64
+      batch_size: 1024
+      l_w: 1e-5
+      n_layers: [1, 2, 3, 4]
+      weight_size: 64
+      node_dropout: [0.0, 0.4, 0.8]
+      message_dropout: [0.0, 0.4, 0.8]
+      normalize: [True, False]
+      seed: 123
+      early_stopping:
+        patience: 50
+        mode: auto
+        monitor: Recall@20
+        verbose: True
+    external.LightGCN:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 1
+        validation_metric: Recall@20
+        restore: False
+        write_best_iterations: True
+      lr: 0.001
+      epochs: 1000
+      factors: 64
+      batch_size: 1024
+      l_w: 1e-4
+      n_layers: [1, 2, 3, 4]
+      normalize: [True, False]
+      seed: 123
+      early_stopping:
+        patience: 50
+        mode: auto
+        monitor: Recall@20
+        verbose: True
+    external.DGCF:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 1
+        validation_metric: Recall@20
+        restore: False
+        write_best_iterations: True
+      lr: 0.001
+      epochs: 1000
+      factors: 64
+      batch_size: 1024
+      l_w_bpr: [0.001, 0.00001]
+      l_w_ind: [0.001, 0.00001]
+      ind_batch_size: 1024
+      n_layers: [1, 2, 3, 4]
+      routing_iterations: 2
+      intents: [2, 4, 8, 16]
+      seed: 123
+      early_stopping:
+        patience: 50
+        mode: auto
+        monitor: Recall@20
+        verbose: True
+    external.LRGCCF:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 1
+        validation_metric: Recall@20
+        restore: False
+        write_best_iterations: True
+      lr: 0.001
+      epochs: 1000
+      factors: 64
+      batch_size: 1024
+      l_w: 0.01
+      n_layers: [1, 2, 3, 4]
+      normalize: [True, False]
+      seed: 123
+      early_stopping:
+        patience: 50
+        mode: auto
+        monitor: Recall@20
+        verbose: True
     external.SGL:
       meta:
         hyper_opt_alg: grid
@@ -111,6 +115,7 @@ experiment:
         validation_rate: 1
         validation_metric: Recall@20
         restore: False
+        write_best_iterations: True
       lr: 0.001
       epochs: 1000
       batch_size: 1024
@@ -134,6 +139,7 @@ experiment:
         validation_rate: 1
         validation_metric: Recall@20
         restore: False
+        write_best_iterations: True
       lr: 0.0001
       epochs: 1000
       factors: 64
@@ -171,6 +177,7 @@ experiment:
         validation_rate: 1
         validation_metric: Recall@20
         restore: False
+        write_best_iterations: True
       factors: 64
       epochs: 15
       batch_size: 1024

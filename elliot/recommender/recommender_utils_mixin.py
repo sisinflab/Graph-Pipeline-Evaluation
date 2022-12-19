@@ -129,7 +129,7 @@ class RecMixin(object):
 
     def iterate(self, epochs):
         for iteration in range(epochs):
-            if self._early_stopping.stop(self._losses[:], self._results):
+            if self._early_stopping.stop(self._losses[:], self._results) and self._write_best_iterations:
                 with open(self._config.path_output_rec_performance + '/best_iterations.tsv', 'a') as f:
                     f.write(self.name + '\t' + str(self._params.best_iteration) + '\n')
                 self.logger.info(f"Met Early Stopping conditions: {self._early_stopping}")
