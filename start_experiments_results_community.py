@@ -9,12 +9,15 @@ import copy
 
 parser = argparse.ArgumentParser(description="Run sample main.")
 parser.add_argument('--dataset', type=str, default='allrecipes')
+parser.add_argument('--projected', action='store_true')
+parser.add_argument('--community_strategy', type=str, default='TabuSampler')
+
 parser.add_argument('--gpu', type=int, default=0)
 args = parser.parse_args()
 
 df = pd.read_csv(f'results/{args.dataset}/performance/best_iterations.tsv', header=None, sep='\t')
 
-config_file = open(f"config_files/experiment_results.yml")
+config_file = open(f"config_files/experiment_results_communities.yml")
 original_config = load(config_file, Loader=FullLoader)
 
 models_params = {
@@ -116,12 +119,24 @@ for ind in df.index:
     for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
         if complex_metric['metric'] in ['BiasDisparityBD', 'BiasDisparityBR', 'BiasDisparityBS']:
             config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'] = \
-                config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(args.dataset)
+                config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(
+                    args.dataset,
+                    'QUBOBipartiteProjectedCommunityDetection' if args.projected else 'QUBOBipartiteCommunityDetection',
+                    args.community_strategy
+                )
             config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'] = \
-                config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(args.dataset)
+                config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(
+                    args.dataset,
+                    'QUBOBipartiteProjectedCommunityDetection' if args.projected else 'QUBOBipartiteCommunityDetection',
+                    args.community_strategy
+                )
         else:
             config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
-                config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(args.dataset)
+                config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(
+                    args.dataset,
+                    'QUBOBipartiteProjectedCommunityDetection' if args.projected else 'QUBOBipartiteCommunityDetection',
+                    args.community_strategy
+                )
     config["experiment"]["models"][f"external.{model}"] = config["experiment"]["models"].pop("external.ModelName")
     config["experiment"]["models"][f"external.{model}"]["meta"]["validation_rate"] = best_iteration
     current_model_params = models_params[model]
