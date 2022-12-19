@@ -9,12 +9,13 @@ import copy
 
 parser = argparse.ArgumentParser(description="Run sample main.")
 parser.add_argument('--dataset', type=str, default='allrecipes')
+parser.add_argument('--config', type=str, default='experiment_results')
 parser.add_argument('--gpu', type=int, default=0)
 args = parser.parse_args()
 
 df = pd.read_csv(f'results/{args.dataset}/performance/best_iterations.tsv', header=None, sep='\t')
 
-config_file = open(f"config_files/experiment_results.yml")
+config_file = open(f"config_files/{args.config}.yml")
 original_config = load(config_file, Loader=FullLoader)
 
 models_params = {
