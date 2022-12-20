@@ -9,7 +9,8 @@ import copy
 
 parser = argparse.ArgumentParser(description="Run sample main.")
 parser.add_argument('--dataset', type=str, default='allrecipes')
-parser.add_argument('--projected', action='store_true')
+parser.add_argument('--projected', action='store_true', default=True)
+parser.add_argument('--save_recs', action='store_true', default=True)
 parser.add_argument('--community_strategy', type=str, default='TabuSampler')
 
 parser.add_argument('--gpu', type=int, default=0)
@@ -151,6 +152,8 @@ for ind in df.index:
             config["experiment"]["models"][f"external.{model}"][value[0]] = best_iteration
         else:
             config["experiment"]["models"][f"external.{model}"][value[0]] = parameter
+    if args.save_recs:
+        config["experiment"]["evaluation"].pop("complex_metrics", None)
     run_experiment(f"config_files/experiment.yml",
                    dataset=args.dataset,
                    gpu=args.gpu,

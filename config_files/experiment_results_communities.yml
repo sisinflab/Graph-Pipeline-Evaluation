@@ -54,4 +54,5 @@ experiment:
         validation_rate: best_iteration
         restore: False
         write_best_iterations: False
+        save_recs: True
       seed: 123
