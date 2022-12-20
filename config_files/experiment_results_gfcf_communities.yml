@@ -9,6 +9,7 @@ experiment:
   top_k: 20
   evaluation:
     cutoffs: [20]
+    simple_metrics: [Recall]
     complex_metrics:
       - metric: BiasDisparityBD
         user_clustering_name: WarmColdUsers
