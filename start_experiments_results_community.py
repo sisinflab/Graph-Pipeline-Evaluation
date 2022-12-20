@@ -154,6 +154,8 @@ for ind in df.index:
             config["experiment"]["models"][f"external.{model}"][value[0]] = parameter
     if args.save_recs:
         config["experiment"]["evaluation"].pop("complex_metrics", None)
+    else:
+        config["experiment"]["models"][f"external.{model}"]["meta"]["save_recs"] = False
     run_experiment(f"config_files/experiment.yml",
                    dataset=args.dataset,
                    gpu=args.gpu,
