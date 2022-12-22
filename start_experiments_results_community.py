@@ -6,7 +6,7 @@ from yaml import load
 
 parser = argparse.ArgumentParser(description="Run sample main.")
 parser.add_argument('--dataset', type=str, default='allrecipes')
-parser.add_argument('--projected', action='store_true', default=True)
+parser.add_argument('--projected', action='store_true')
 parser.add_argument('--community_strategy', type=str, default='TabuSampler')
 
 args = parser.parse_args()
