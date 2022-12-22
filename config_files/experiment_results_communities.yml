@@ -45,14 +45,6 @@ experiment:
         clustering_name: WarmColdItems
         clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
   gpu: -1
-  external_models_path: ../external/models/__init__.py
   models:
-    external.ModelName:
-      meta:
-        verbose: True
-        save_weights: False
-        validation_rate: best_iteration
-        restore: False
-        write_best_iterations: False
-        save_recs: True
-      seed: 123
+    RecommendationFolder:
+      folder: ../results/{0}/recs/
