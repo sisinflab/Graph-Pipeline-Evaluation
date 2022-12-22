@@ -41,6 +41,6 @@ config["experiment"]["models"]["RecommendationFolder"]["folder"] = \
 
 run_experiment(f"config_files/experiment.yml",
                dataset=args.dataset,
-               gpu=args.gpu,
+               gpu=-1,
                config_already_loaded=True,
                config=config)
