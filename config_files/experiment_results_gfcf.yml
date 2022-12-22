@@ -9,41 +9,41 @@ experiment:
   top_k: 20
   evaluation:
     cutoffs: [20]
-    simple_metrics: [nDCG, Recall, Precision, HR, MAR, MAP, MRR, F1, ACLT, APLT, ARP, PopREO, PopRESP, ItemCoverage, Gini, SE]
-    complex_metrics:
-      - metric: BiasDisparityBD
-        user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/{0}/user_groups_pareto.tsv
-        item_clustering_name: WarmColdItem
-        item_clustering_file: ../data/{0}/item_groups_pareto.tsv
-      - metric: BiasDisparityBR
-        user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/{0}/user_groups_pareto.tsv
-        item_clustering_name: WarmColdItem
-        item_clustering_file: ../data/{0}/item_groups_pareto.tsv
-      - metric: BiasDisparityBS
-        user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/{0}/user_groups_pareto.tsv
-        item_clustering_name: WarmColdItem
-        item_clustering_file: ../data/{0}/item_groups_pareto.tsv
-      - metric: UserMADranking
-        clustering_name: WarmColdUsers
-        clustering_file: ../data/{0}/user_groups_pareto.tsv
-      - metric: UserMADranking
-        clustering_name: WarmColdUsers
-        clustering_file: ../data/{0}/user_groups_pareto.tsv
-      - metric: ItemMADranking
-        clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/item_groups_pareto.tsv
-      - metric: ItemMADranking
-        clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/item_groups_pareto.tsv
-      - metric: REO
-        clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/item_groups_pareto.tsv
-      - metric: RSP
-        clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/item_groups_pareto.tsv
+    simple_metrics: [Recall]
+#    complex_metrics:
+#      - metric: BiasDisparityBD
+#        user_clustering_name: WarmColdUsers
+#        user_clustering_file: ../data/{0}/user_groups_pareto.tsv
+#        item_clustering_name: WarmColdItem
+#        item_clustering_file: ../data/{0}/item_groups_pareto.tsv
+#      - metric: BiasDisparityBR
+#        user_clustering_name: WarmColdUsers
+#        user_clustering_file: ../data/{0}/user_groups_pareto.tsv
+#        item_clustering_name: WarmColdItem
+#        item_clustering_file: ../data/{0}/item_groups_pareto.tsv
+#      - metric: BiasDisparityBS
+#        user_clustering_name: WarmColdUsers
+#        user_clustering_file: ../data/{0}/user_groups_pareto.tsv
+#        item_clustering_name: WarmColdItem
+#        item_clustering_file: ../data/{0}/item_groups_pareto.tsv
+#      - metric: UserMADranking
+#        clustering_name: WarmColdUsers
+#        clustering_file: ../data/{0}/user_groups_pareto.tsv
+#      - metric: UserMADranking
+#        clustering_name: WarmColdUsers
+#        clustering_file: ../data/{0}/user_groups_pareto.tsv
+#      - metric: ItemMADranking
+#        clustering_name: WarmColdItems
+#        clustering_file: ../data/{0}/item_groups_pareto.tsv
+#      - metric: ItemMADranking
+#        clustering_name: WarmColdItems
+#        clustering_file: ../data/{0}/item_groups_pareto.tsv
+#      - metric: REO
+#        clustering_name: WarmColdItems
+#        clustering_file: ../data/{0}/item_groups_pareto.tsv
+#      - metric: RSP
+#        clustering_name: WarmColdItems
+#        clustering_file: ../data/{0}/item_groups_pareto.tsv
   gpu: -1
   external_models_path: ../external/models/__init__.py
   models:
