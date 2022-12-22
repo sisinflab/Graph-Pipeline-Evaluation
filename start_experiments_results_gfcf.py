@@ -11,15 +11,15 @@ args = parser.parse_args()
 config_file = open(f"config_files/experiment_results_gfcf.yml")
 config = load(config_file, Loader=FullLoader)
 
-# for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
-#     if complex_metric['metric'] in ['BiasDisparityBD', 'BiasDisparityBR', 'BiasDisparityBS']:
-#         config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'] = \
-#             config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(args.dataset)
-#         config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'] = \
-#             config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(args.dataset)
-#     else:
-#         config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
-#             config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(args.dataset)
+for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
+    if complex_metric['metric'] in ['BiasDisparityBD', 'BiasDisparityBR', 'BiasDisparityBS']:
+        config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'] = \
+            config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(args.dataset)
+        config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'] = \
+            config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(args.dataset)
+    else:
+        config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
+            config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(args.dataset)
 
 run_experiment(f"config_files/experiment.yml",
                dataset=args.dataset,
