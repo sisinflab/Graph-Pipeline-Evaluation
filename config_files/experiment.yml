@@ -27,11 +27,11 @@ experiment:
       factors: 64
       batch_size: 1024
       l_w: 1e-5
-      n_layers: 3
+      n_layers: [1, 2, 3, 4]
       weight_size: 64
-      node_dropout: 0.8
-      message_dropout: 0.0
-      normalize: True
+      node_dropout: [0.0, 0.4, 0.8]
+      message_dropout: [0.0, 0.4, 0.8]
+      normalize: [True, False]
       seed: 123
       early_stopping:
         patience: 50
