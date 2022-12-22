@@ -113,15 +113,6 @@ for ind in df.index:
     best_iteration = int(df[1][ind])
     model = current_config.split('_')[0]
     config = copy.deepcopy(original_config)
-    for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
-        if complex_metric['metric'] in ['BiasDisparityBD', 'BiasDisparityBR', 'BiasDisparityBS']:
-            config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'] = \
-                config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(args.dataset)
-            config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'] = \
-                config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(args.dataset)
-        else:
-            config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
-                config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(args.dataset)
     config["experiment"]["models"][f"external.{model}"] = config["experiment"]["models"].pop("external.ModelName")
     config["experiment"]["models"][f"external.{model}"]["meta"]["validation_rate"] = best_iteration
     current_model_params = models_params[model]
