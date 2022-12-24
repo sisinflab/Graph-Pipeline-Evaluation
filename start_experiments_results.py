@@ -112,8 +112,6 @@ for ind in df.index:
     current_config = df[0][ind]
     best_iteration = int(df[1][ind])
     model = current_config.split('_')[0]
-    if model != 'NGCF':
-        continue
     config = copy.deepcopy(original_config)
     for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
         if complex_metric['metric'] in ['BiasDisparityBD', 'BiasDisparityBR', 'BiasDisparityBS']:
