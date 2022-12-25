@@ -9,7 +9,7 @@ experiment:
   top_k: 20
   evaluation:
     cutoffs: [20]
-    simple_metrics: [Recall]
+    simple_metrics: [nDCG, Recall, Precision, HR, MAR, MAP, MRR, F1, ACLT, APLT, ARP, PopREO, PopRESP, ItemCoverage, Gini, SE]
     complex_metrics:
       - metric: BiasDisparityBD
         user_clustering_name: WarmColdUsers

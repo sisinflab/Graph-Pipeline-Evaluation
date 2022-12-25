@@ -7,7 +7,7 @@ from yaml import FullLoader as FullLoader
 from yaml import load
 
 parser = argparse.ArgumentParser(description="Run collect results.")
-parser.add_argument('--folder', type=str, default='bookcrossing_results')
+parser.add_argument('--folder', type=str, default='allrecipes_results')
 args = parser.parse_args()
 
 all_configurations_file = open(f"results/all_configurations.yml")
@@ -48,6 +48,6 @@ for name, group in df_results.groupby('model_name'):
 if not missing_configs:
     for name, group in df_results.groupby('model_name'):
         group.insert(0, 'model', group[['model_name', 'model_params']].apply(lambda x: "_".join(x), axis=1))
-        group.drop(['model_name', 'model_params'], axis=1, inplace=True)
+        group.drop(['model_name', 'model_params', 'filename'], axis=1, inplace=True)
         group.to_csv(f'./results/{args.folder}/rec_{name}.tsv', sep='\t', index=None)
 
