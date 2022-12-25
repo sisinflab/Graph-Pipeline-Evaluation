@@ -7,13 +7,19 @@ from yaml import FullLoader as FullLoader
 from yaml import load
 
 parser = argparse.ArgumentParser(description="Run collect results.")
-parser.add_argument('--folder', type=str, default='allrecipes_results')
+parser.add_argument('--folder', type=str, default='clothing_results')
 args = parser.parse_args()
 
 all_configurations_file = open(f"results/all_configurations.yml")
 all_configurations = load(all_configurations_file, Loader=FullLoader)
 
-result_files = [f for f in os.listdir(f'./results/{args.folder}') if f != 'rec_GFCF.tsv']
+result_files = [f for f in os.listdir(f'./results/{args.folder}') if f not in ['rec_NGCF.tsv',
+                                                                               'rec_LightGCN',
+                                                                               'rec_LRGCCF',
+                                                                               'rec_DGCF',
+                                                                               'rec_SGL',
+                                                                               'rec_SVDGCN',
+                                                                               'rec_UltraGCN']]
 
 df_results = pd.DataFrame()
 
