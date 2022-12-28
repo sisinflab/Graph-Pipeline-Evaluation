@@ -13,37 +13,37 @@ experiment:
     complex_metrics:
       - metric: BiasDisparityBD
         user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/{0}/{1}/{2}/user_groups_community.tsv
+        user_clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/user_groups_community.tsv
         item_clustering_name: WarmColdItem
-        item_clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
+        item_clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/item_groups_community.tsv
       - metric: BiasDisparityBR
         user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/{0}/{1}/{2}/user_groups_community.tsv
+        user_clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/user_groups_community.tsv
         item_clustering_name: WarmColdItem
-        item_clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
+        item_clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/item_groups_community.tsv
       - metric: BiasDisparityBS
         user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/{0}/{1}/{2}/user_groups_community.tsv
+        user_clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/user_groups_community.tsv
         item_clustering_name: WarmColdItem
-        item_clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
+        item_clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/item_groups_community.tsv
       - metric: UserMADranking
         clustering_name: WarmColdUsers
-        clustering_file: ../data/{0}/{1}/{2}/user_groups_community.tsv
+        clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/user_groups_community.tsv
       - metric: UserMADrating
         clustering_name: WarmColdUsers
-        clustering_file: ../data/{0}/{1}/{2}/user_groups_community.tsv
+        clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/user_groups_community.tsv
       - metric: ItemMADranking
         clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
+        clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/item_groups_community.tsv
       - metric: ItemMADrating
         clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
+        clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/item_groups_community.tsv
       - metric: REO
         clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
+        clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/item_groups_community.tsv
       - metric: RSP
         clustering_name: WarmColdItems
-        clustering_file: ../data/{0}/{1}/{2}/item_groups_community.tsv
+        clustering_file: ../data/{0}/QUBOBipartiteCommunityDetection/{1}/item_groups_community.tsv
   gpu: -1
   models:
     RecommendationFolder:
