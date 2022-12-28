@@ -29,13 +29,13 @@ experiment:
       - metric: UserMADranking
         clustering_name: WarmColdUsers
         clustering_file: ../data/{0}/user_groups_pareto.tsv
-      - metric: UserMADranking
+      - metric: UserMADrating
         clustering_name: WarmColdUsers
         clustering_file: ../data/{0}/user_groups_pareto.tsv
       - metric: ItemMADranking
         clustering_name: WarmColdItems
         clustering_file: ../data/{0}/item_groups_pareto.tsv
-      - metric: ItemMADranking
+      - metric: ItemMADrating
         clustering_name: WarmColdItems
         clustering_file: ../data/{0}/item_groups_pareto.tsv
       - metric: REO
