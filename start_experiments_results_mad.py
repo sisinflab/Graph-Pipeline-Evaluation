@@ -15,8 +15,7 @@ config = load(config_file, Loader=FullLoader)
 for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
     config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
             config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(
-                args.dataset, args.community_strategy
-            )
+                args.dataset)
 
 config["experiment"]["models"]["RecommendationFolder"]["folder"] = \
     config["experiment"]["models"]["RecommendationFolder"]["folder"].format(args.dataset)
