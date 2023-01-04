@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Run collect results community.")
-parser.add_argument('--folder', type=str, default='allrecipes_results_simulatedannealing')
+parser.add_argument('--folder', type=str, default='allrecipes_results_tabusampler')
 args = parser.parse_args()
 
 file = os.listdir(f'./results/{args.folder}/')[0]
