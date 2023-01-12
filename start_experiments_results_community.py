@@ -6,7 +6,6 @@ from yaml import load
 
 parser = argparse.ArgumentParser(description="Run sample main.")
 parser.add_argument('--dataset', type=str, default='allrecipes')
-parser.add_argument('--community_strategy', type=str, default='SteepestDescentSolver')
 
 args = parser.parse_args()
 
@@ -14,19 +13,15 @@ config_file = open(f"config_files/experiment_results_communities.yml")
 config = load(config_file, Loader=FullLoader)
 
 for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
-    if complex_metric['metric'] in ['BiasDisparityBD', 'BiasDisparityBR', 'BiasDisparityBS']:
+    if complex_metric['metric'] in ['clustered_nDCG', 'clustered_GiniIndex', 'clustered_Recall', 'clustered_APLT']:
         config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'] = \
             config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(
-                args.dataset, args.community_strategy
-            )
-        config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'] = \
-            config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(
-                args.dataset, args.community_strategy
+                args.dataset
             )
     else:
         config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
             config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(
-                args.dataset, args.community_strategy
+                args.dataset
             )
 
 config["experiment"]["models"]["RecommendationFolder"]["folder"] = \
