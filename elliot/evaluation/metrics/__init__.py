@@ -12,9 +12,9 @@ __version__ = '0.3.1'
 __author__ = 'Vito Walter Anelli, Claudio Pomo'
 __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it'
 
-from elliot.evaluation.metrics.accuracy.ndcg import nDCG, nDCGRendle2020
+from elliot.evaluation.metrics.accuracy.ndcg import nDCG, nDCGRendle2020, clustered_nDCG
 from elliot.evaluation.metrics.accuracy.precision import Precision
-from elliot.evaluation.metrics.accuracy.recall import Recall
+from elliot.evaluation.metrics.accuracy.recall import Recall, clustered_Recall
 from elliot.evaluation.metrics.accuracy.hit_rate import HR
 from elliot.evaluation.metrics.accuracy.mrr import MRR
 from elliot.evaluation.metrics.accuracy.map import MAP
@@ -29,14 +29,14 @@ from elliot.evaluation.metrics.rating.rmse import RMSE
 
 from elliot.evaluation.metrics.coverage import ItemCoverage, UserCoverage, NumRetrieved, UserCoverageAtN
 
-from elliot.evaluation.metrics.diversity.gini_index import GiniIndex
+from elliot.evaluation.metrics.diversity.gini_index import GiniIndex, clustered_GiniIndex
 from elliot.evaluation.metrics.diversity.shannon_entropy import ShannonEntropy
 from elliot.evaluation.metrics.diversity.SRecall import SRecall
 
 from elliot.evaluation.metrics.novelty.EFD import EFD, ExtendedEFD
 from elliot.evaluation.metrics.novelty.EPC import EPC, ExtendedEPC
 
-from elliot.evaluation.metrics.bias import ARP, APLT, ACLT, PopRSP, PopREO, ExtendedPopRSP, ExtendedPopREO
+from elliot.evaluation.metrics.bias import ARP, APLT, ACLT, PopRSP, PopREO, ExtendedPopRSP, ExtendedPopREO, clustered_APLT
 
 from elliot.evaluation.metrics.fairness.MAD import UserMADrating, ItemMADrating, UserMADranking, ItemMADranking
 from elliot.evaluation.metrics.fairness.BiasDisparity import BiasDisparityBR, BiasDisparityBS, BiasDisparityBD
@@ -89,7 +89,11 @@ _metric_dictionary = {
     "ExtendedPopRSP": ExtendedPopRSP,
     "ExtendedPopREO": ExtendedPopREO,
     "RSP": RSP,
-    "REO": REO
+    "REO": REO,
+    "clustered_nDCG": clustered_nDCG,
+    "clustered_GiniIndex": clustered_GiniIndex,
+    "clustered_Recall": clustered_Recall,
+    "clustered_APLT": clustered_APLT
 }
 
 _lower_dict = {k.lower(): v for k, v in _metric_dictionary.items()}

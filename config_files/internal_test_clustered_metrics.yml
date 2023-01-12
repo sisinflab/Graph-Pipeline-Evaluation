@@ -1,0 +1,43 @@
+experiment:
+  version: 0.3.1
+  backend: tensorflow
+  data_config:
+    strategy: fixed
+    train_path: ../data/{0}/train.tsv
+    validation_path: ../data/{0}/validation.tsv
+    test_path: ../data/{0}/test.tsv
+#  binarize: True
+  dataset: bookcrossing_test_clustered_metrics
+  external_models_path: ../external/models/__init__.py
+  top_k: 10
+  evaluation:
+    cutoffs: [10]
+    simple_metrics: [nDCGRendle2020, Precision, Recall, HR, ItemCoverage, Gini]
+    complex_metrics:
+      - metric: clustered_nDCG
+        user_clustering_name: ParetoUsers
+        user_clustering_file: ../data/bookcrossing_test_clustered_metrics/users_communities.tsv
+      - metric: clustered_GiniIndex
+        user_clustering_name: ParetoUsers
+        user_clustering_file: ../data/bookcrossing_test_clustered_metrics/users_communities.tsv
+      - metric: clustered_Recall
+        user_clustering_name: ParetoUsers
+        user_clustering_file: ../data/bookcrossing_test_clustered_metrics/users_communities.tsv
+      - metric: clustered_APLT
+        user_clustering_name: ParetoUsers
+        user_clustering_file: ../data/bookcrossing_test_clustered_metrics/users_communities.tsv
+      - metric: REO
+        clustering_name: ParetoItems
+        clustering_file: ../data/bookcrossing_test_clustered_metrics/items_communities.tsv
+      - metric: RSP
+        clustering_name: ParetoItems
+        clustering_file: ../data/bookcrossing_test_clustered_metrics/items_communities.tsv
+    relevance_threshold: 0
+    wilcoxon_test: False
+    paired_ttest: False
+  print_results_as_triplets: False
+  gpu: -1 # -1 is not use GPU
+  models:
+    ProxyRecommender:
+#      path: /Users/walter/Downloads/UltraGCN_seed=123_e=95_bs=1024_lr=0$0001_factors=64_w1=1e-07_w2=1$0_w3=1e-07_w4=1$0_ii_n_n=10_i_w=0$0001_n_n_w=1500_g=0$0001_l=0$1_s_s_p=True_it=95.tsv
+      path: /Users/walter/Downloads/NGCF_seed=123_e=264_bs=1024_lr=0$0001_factors=64_l_w=1e-05_n_layers=3_weight_size=64_node_dropout=0$8_message_dropout=0$8_normalize=False_it=264.tsv
