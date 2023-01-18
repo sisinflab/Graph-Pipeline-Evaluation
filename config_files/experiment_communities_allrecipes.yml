@@ -3,7 +3,6 @@ experiment:
   data_config:
     strategy: fixed
     train_path: ../data/{0}/train.tsv
-    test_path: ../data/{0}/train.tsv
   dataset:
   top_k: 20
   evaluation:
