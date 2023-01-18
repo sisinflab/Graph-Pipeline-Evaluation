@@ -1,0 +1,50 @@
+experiment:
+  backend: pytorch
+  data_config:
+    strategy: fixed
+    train_path: ../data/{0}/train.tsv
+    test_path: ../data/{0}/train.tsv
+  dataset:
+  top_k: 20
+  evaluation:
+    cutoffs: [20]
+    simple_metrics: [nDCG, Recall, Precision, HR, MAR, MAP, MRR, F1]
+  gpu: 0
+  external_models_path: ../external/models/__init__.py
+  models:
+    external.LightGCN:
+      meta:
+        verbose: True
+        save_weights: True
+        validation_rate: 34
+        validation_metric: Recall@20
+        restore: False
+      lr: 0.001
+      epochs: 34
+      factors: 64
+      batch_size: 1024
+      l_w: 1e-4
+      n_layers: 3
+      normalize: True
+      seed: 123
+    # 8
+    external.SVDGCN:
+      meta:
+        verbose: True
+        save_weights: True
+        validation_rate: 4
+        validation_metric: Recall@20
+        restore: False
+      factors: 64
+      epochs: 4
+      batch_size: 1024
+      l_w: 0.01
+      lr: 7.0
+      req_vec: 90
+      beta: 2.0
+      alpha: 2.0
+      coef_u: 0.3
+      coef_i: 0.1
+      seed: 123
+      # 64
+      # no early stopping because epochs are very low
