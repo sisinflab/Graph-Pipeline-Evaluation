@@ -207,8 +207,7 @@ class SVDGCN(RecMixin, BaseRecommenderModel):
                 if self._save_weights:
                     if hasattr(self, "_model"):
                         torch.save({
-                            'model_state_dict': self._model.state_dict(),
-                            'optimizer_state_dict': self._model.optimizer.state_dict()
+                            'model_state_dict': self._model.state_dict()
                         }, self._saving_filepath)
                     else:
                         self.logger.warning("Saving weights FAILED. No model to save.")
@@ -217,7 +216,6 @@ class SVDGCN(RecMixin, BaseRecommenderModel):
         try:
             checkpoint = torch.load(self._saving_filepath)
             self._model.load_state_dict(checkpoint['model_state_dict'])
-            self._model.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             print(f"Model correctly Restored")
             self.evaluate()
             return True
