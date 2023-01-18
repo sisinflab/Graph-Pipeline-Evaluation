@@ -14,6 +14,8 @@ from torch_sparse import SparseTensor
 
 import math
 
+import json
+
 
 class LightGCN(RecMixin, BaseRecommenderModel):
     r"""
@@ -62,6 +64,16 @@ class LightGCN(RecMixin, BaseRecommenderModel):
             ("_normalize", "normalize", "normalize", True, bool, None)
         ]
         self.autoset_params()
+
+        folder = os.path.dirname(data.config.data_config.train_path)
+
+        with open(folder + '/private_users.tsv', 'w') as f:
+            for k, v in data.private_users.items():
+                f.write(str(k) + '\t' + str(v) + '\n')
+
+        with open(folder + '/private_items.tsv', 'w') as f:
+            for k, v in data.private_items.items():
+                f.write(str(k) + '\t' + str(v) + '\n')
 
         row, col = data.sp_i_train.nonzero()
         col = [c + self._num_users for c in col]
