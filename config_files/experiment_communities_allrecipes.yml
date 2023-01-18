@@ -17,7 +17,7 @@ experiment:
       meta:
         hyper_opt_alg: grid
         verbose: True
-        save_weights: False
+        save_weights: True
         validation_rate: 1
         validation_metric: Recall@20
         restore: False
