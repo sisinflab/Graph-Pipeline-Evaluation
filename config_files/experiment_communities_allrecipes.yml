@@ -29,23 +29,3 @@ experiment:
       normalize: False
       seed: 123
     # 8
-    external.SVDGCN:
-      meta:
-        verbose: True
-        save_weights: True
-        validation_rate: 5
-        validation_metric: Recall@20
-        restore: False
-      factors: 64
-      epochs: 5
-      batch_size: 1024
-      l_w: 0.01
-      lr: 7.0
-      req_vec: 60
-      beta: 2.0
-      alpha: 3.0
-      coef_u: 0.7
-      coef_i: 0.7
-      seed: 123
-      # 64
-      # no early stopping because epochs are very low
