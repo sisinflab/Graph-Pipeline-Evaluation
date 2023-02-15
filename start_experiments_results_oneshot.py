@@ -17,6 +17,9 @@ for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex
             config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(args.dataset)
         config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'] = \
             config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(args.dataset)
+    elif complex_metric['metric'] in ['UserMADranking', 'UserMADrating', 'ItemMADranking', 'ItemMADrating', 'REO', 'RSP']:
+        config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
+            config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(args.dataset)
     else:
         config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'] = \
             config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(args.dataset)
