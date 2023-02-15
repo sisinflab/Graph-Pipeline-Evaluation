@@ -9,3 +9,5 @@ __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it'
 
 from .base_recommender_model import BaseRecommenderModel
 from .generic import ProxyRecommender
+from .knn import ItemKNN, UserKNN, AttributeItemKNN, AttributeUserKNN
+from .graph_based import RP3beta
