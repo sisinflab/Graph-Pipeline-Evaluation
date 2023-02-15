@@ -18,8 +18,8 @@ for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex
         config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'] = \
             config['experiment']['evaluation']['complex_metrics'][idx]['item_clustering_file'].format(args.dataset)
     else:
-        config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'] = \
-            config['experiment']['evaluation']['complex_metrics'][idx]['clustering_file'].format(args.dataset)
+        config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'] = \
+            config['experiment']['evaluation']['complex_metrics'][idx]['user_clustering_file'].format(args.dataset)
 
 run_experiment(f"config_files/experiment.yml",
                dataset=args.dataset,
