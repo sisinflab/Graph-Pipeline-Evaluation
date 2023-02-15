@@ -186,5 +186,5 @@ experiment:
       coef_u: [0.1, 0.3, 0.5, 0.7]
       coef_i: [0.1, 0.3, 0.5, 0.7]
       seed: 123
-      # 64
-      # no early stopping because epochs are very low
+    # 64
+    # no early stopping because epochs are very low

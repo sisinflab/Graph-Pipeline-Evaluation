@@ -35,8 +35,6 @@ df_results.insert(1, 'model_params', df_results['model'].apply(lambda row: row.s
 df_results.drop('model', axis=1, inplace=True)
 df_results.reset_index(drop=True, inplace=True)
 
-# df_results[df_results['model_name'] == 'NGCF'][df_results[df_results['model_name'] == 'NGCF']['model_params'].duplicated(keep=False)]['filename'].tolist()
-
 missing_configs = False
 
 for name, group in df_results.groupby('model_name'):
@@ -56,4 +54,3 @@ if not missing_configs:
         group.insert(0, 'model', group[['model_name', 'model_params']].apply(lambda x: "_".join(x), axis=1))
         group.drop(['model_name', 'model_params', 'filename'], axis=1, inplace=True)
         group.to_csv(f'./results/{args.folder}/rec_{name}.tsv', sep='\t', index=None)
-

@@ -8,7 +8,7 @@ parser.add_argument('--dataset', type=str, default='gowalla')
 parser.add_argument('--gpu', type=int, default=0)
 args = parser.parse_args()
 
-config_file = open(f"config_files/experiment_results_gfcf.yml")
+config_file = open(f"config_files/experiment_results_oneshot.yml")
 config = load(config_file, Loader=FullLoader)
 
 for idx, complex_metric in enumerate(config['experiment']['evaluation']['complex_metrics']):
