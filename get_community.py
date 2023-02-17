@@ -8,7 +8,7 @@ from networkx.algorithms import community
 from networkx import bipartite
 
 parser = argparse.ArgumentParser(description="Run community detection and related stats")
-parser.add_argument('--dataset', type=str, default='allrecipes')
+parser.add_argument('--dataset', type=str, default='bookcrossing')
 args = parser.parse_args()
 
 train = pd.read_csv(f'./data/{args.dataset}/train.tsv', sep='\t', header=None)
@@ -47,6 +47,12 @@ item_communities_private = pd.DataFrame(item_communities_private).sort_values([0
 train = pd.merge(train, user_communities_private, how='inner', left_on=0, right_on=0)
 train = pd.merge(train, item_communities_private, how='inner', left_on='1_x', right_on=0)
 train.drop(['0_y'], axis=1, inplace=True)
+
+for idx, group in train.groupby('1_y'):
+    group[['0_x', '1_x']].to_csv(f'./data/{args.dataset}/train_user_{idx}.tsv', sep='\t', index=None, header=None)
+
+for idx, group in train.groupby(1):
+    group[['0_x', '1_x']].to_csv(f'./data/{args.dataset}/train_item_{idx}.tsv', sep='\t', index=None, header=None)
 
 # users communities
 stats_users = train.groupby(['1_y']).agg({2: 'count', '0_x': 'nunique', '1_x': 'nunique'})

@@ -88,7 +88,10 @@ files = ['rec_DGCF_community.tsv',
          'rec_NGCF_community.tsv',
          'rec_SGL_community.tsv',
          'rec_SVDGCN_community.tsv',
-         'rec_UltraGCN_community.tsv']
+         'rec_UltraGCN_community.tsv',
+         'rec_UserKNN.tsv',
+         'rec_ItemKNN.tsv',
+         'rec_RP3beta.tsv']
 
 for f in files:
     model = f.split('_')[1].split('.')[0]
