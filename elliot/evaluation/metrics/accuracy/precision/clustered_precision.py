@@ -114,3 +114,5 @@ class clustered_Precision(BaseMetric):
             self._metric_objs_list.append(ProxyMetric(name=f"Precision_users:{self._user_clustering_name}-{u_group}",
                                                       val=self._values_dict[u_group],
                                                       needs_full_recommendations=False))
+    def get(self):
+        return self._metric_objs_list
