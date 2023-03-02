@@ -13,7 +13,7 @@ __author__ = 'Vito Walter Anelli, Claudio Pomo'
 __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it'
 
 from elliot.evaluation.metrics.accuracy.ndcg import nDCG, nDCGRendle2020, clustered_nDCG
-from elliot.evaluation.metrics.accuracy.precision import Precision
+from elliot.evaluation.metrics.accuracy.precision import Precision, clustered_precision
 from elliot.evaluation.metrics.accuracy.recall import Recall, clustered_Recall
 from elliot.evaluation.metrics.accuracy.hit_rate import HR
 from elliot.evaluation.metrics.accuracy.mrr import MRR
@@ -93,7 +93,8 @@ _metric_dictionary = {
     "clustered_nDCG": clustered_nDCG,
     "clustered_GiniIndex": clustered_GiniIndex,
     "clustered_Recall": clustered_Recall,
-    "clustered_APLT": clustered_APLT
+    "clustered_APLT": clustered_APLT,
+    "clustered_Precision": clustered_precision
 }
 
 _lower_dict = {k.lower(): v for k, v in _metric_dictionary.items()}
