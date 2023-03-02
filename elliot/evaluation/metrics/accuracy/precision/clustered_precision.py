@@ -37,7 +37,7 @@ class clustered_Precision(BaseMetric):
         simple_metrics: [Precision]
     """
 
-    def __init__(self, recommendations, config, params, eval_objects):
+    def __init__(self, recommendations, config, params, eval_objects, additional_data):
         """
         Constructor
         :param recommendations: list of recommendations in the form {user: [(item1,value1),...]}
@@ -45,7 +45,7 @@ class clustered_Precision(BaseMetric):
         :param params: Parameters of the model
         :param eval_objects: list of objects that may be useful for the computation of the different metrics
         """
-        super().__init__(recommendations, config, params, eval_objects)
+        super().__init__(recommendations, config, params, eval_objects, additional_data)
         self._cutoff = self._evaluation_objects.cutoff
         self._relevance = self._evaluation_objects.relevance.binary_relevance
 

@@ -139,6 +139,7 @@ class Evaluator(object):
 
             metric_objects = [m(recommendations, self._data.config, self._params, eval_objs) for m in self._metrics]
             for metric in self._complex_metrics:
+                print()
                 metric_objects.extend(metrics.parse_metric(metric["metric"])(recommendations, self._data.config,
                                                                              self._params, eval_objs, metric).get())
             results = {m.name(): m.eval() for m in metric_objects}

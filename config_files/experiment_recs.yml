@@ -11,7 +11,7 @@ experiment:
     cutoffs: [20]
     simple_metrics: [nDCG]
     complex_metrics:
-      - metric: clustered_Precision
+      - metric: clustered_Recall
         user_clustering_name: WarmColdUsers
         user_clustering_file: ../data/{0}/user_groups_pareto.tsv
   gpu: -1
