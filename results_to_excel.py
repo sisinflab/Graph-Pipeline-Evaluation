@@ -3,7 +3,7 @@ import re
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Run results to excel.")
-parser.add_argument('--folder', type=str, default='bookcrossing_results_community')
+parser.add_argument('--folder', type=str, default='bookcrossing_results')
 args = parser.parse_args()
 
 models_params = {
@@ -78,17 +78,47 @@ models_params = {
     'GFCF': {
         'svd_factors': ['svd_factors', int],
         'alpha': ['alpha', float]
+    },
+    'UserKNN': {
+        'nn': ['nn', int],
+        'sim': ['sim', str],
+        'imp': ['imp', str],
+        'bin': ['bin', bool],
+        'shrink': ['shrink', int],
+        'norm': ['norm', bool],
+        'asymalpha': ['asymalpha', str],
+        'tvalpha': ['tvalpha', str],
+        'tvbeta': ['tvbeta', str],
+        'rweights': ['rweights', str]
+    },
+    'ItemKNN': {
+        'nn': ['nn', int],
+        'sim': ['sim', str],
+        'imp': ['imp', str],
+        'bin': ['bin', bool],
+        'shrink': ['shrink', int],
+        'norm': ['norm', bool],
+        'asymalpha': ['asymalpha', str],
+        'tvalpha': ['tvalpha', str],
+        'tvbeta': ['tvbeta', str],
+        'rweights': ['rweights', str]
+    },
+    'RP3beta': {
+        'neighborhood': ['neighborhood', int],
+        'alpha': ['alpha', float],
+        'beta': ['beta', float],
+        'normalize_similarity': ['normalize_similarity', bool]
     }
 }
 
-files = ['rec_DGCF_community.tsv',
-         'rec_GFCF_community.tsv',
-         'rec_LightGCN_community.tsv',
-         'rec_LRGCCF_community.tsv',
-         'rec_NGCF_community.tsv',
-         'rec_SGL_community.tsv',
-         'rec_SVDGCN_community.tsv',
-         'rec_UltraGCN_community.tsv',
+files = ['rec_DGCF.tsv',
+         'rec_GFCF.tsv',
+         'rec_LightGCN.tsv',
+         'rec_LRGCCF.tsv',
+         'rec_NGCF.tsv',
+         'rec_SGL.tsv',
+         'rec_SVDGCN.tsv',
+         'rec_UltraGCN.tsv',
          'rec_UserKNN.tsv',
          'rec_ItemKNN.tsv',
          'rec_RP3beta.tsv']
