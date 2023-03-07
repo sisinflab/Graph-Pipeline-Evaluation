@@ -3,7 +3,7 @@ import re
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Run results to excel.")
-parser.add_argument('--folder', type=str, default='bookcrossing_results')
+parser.add_argument('--folder', type=str, default='clothing_results')
 args = parser.parse_args()
 
 models_params = {
