@@ -42,7 +42,6 @@ class SGLModel(torch.nn.Module, ABC):
         self.l_w = l_w
         self.n_layers = n_layers
         self.weight_size_list = [self.embed_k] * (self.n_layers + 1)
-        self.alpha = torch.tensor([1 / (k + 1) for k in range(len(self.weight_size_list))])
         self.adj = adj
         self.ssl_temp = ssl_temp
         self.ssl_reg = ssl_reg
@@ -58,11 +57,10 @@ class SGLModel(torch.nn.Module, ABC):
         propagation_network_list = []
 
         for layer in range(self.n_layers):
-            propagation_network_list.append((LGConv(), 'x, edge_index -> x'))
+            propagation_network_list.append((LGConv(normalize=True), 'x, edge_index -> x'))
 
         self.propagation_network = torch_geometric.nn.Sequential('x, edge_index', propagation_network_list)
         self.propagation_network.to(self.device)
-        self.softplus = torch.nn.Softplus()
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
@@ -80,7 +78,7 @@ class SGLModel(torch.nn.Module, ABC):
                     self.propagation_network.children()
                 )[layer](all_embeddings[layer].to(self.device), adj.to(self.device))]
 
-        all_embeddings = sum([all_embeddings[k] * self.alpha[k] for k in range(len(all_embeddings))])
+        all_embeddings = torch.stack(all_embeddings, dim=1).mean(dim=1)
         gu, gi = torch.split(all_embeddings, [self.num_users, self.num_items], 0)
 
         return gu, gi
@@ -94,9 +92,9 @@ class SGLModel(torch.nn.Module, ABC):
 
         return xui
 
-    def predict(self, user_start, user_stop, **kwargs):
-        return torch.matmul(self.Gu[user_start:user_stop].to(self.device),
-                            torch.transpose(self.Gi.to(self.device), 0, 1))
+    def predict(self, gu, gi, **kwargs):
+        return torch.matmul(gu.to(self.device),
+                            torch.transpose(gi.to(self.device), 0, 1))
 
     @staticmethod
     def l2_loss(*weights):
@@ -117,6 +115,9 @@ class SGLModel(torch.nn.Module, ABC):
         gu1, gi1 = self.propagate_embeddings(adj_1)
         gu2, gi2 = self.propagate_embeddings(adj_2)
 
+        gu1, gi1 = torch.nn.functional.normalize(gu1, dim=1), torch.nn.functional.normalize(gi1, dim=1)
+        gu2, gi2 = torch.nn.functional.normalize(gu2, dim=1), torch.nn.functional.normalize(gi2, dim=1)
+
         user, pos, neg = batch
         xu_pos = self.forward(inputs=(gu[user[:, 0]], gi[pos[:, 0]]))
         xu_neg = self.forward(inputs=(gu[user[:, 0]], gi[neg[:, 0]]))
@@ -126,9 +127,9 @@ class SGLModel(torch.nn.Module, ABC):
         pos_ratings_item = self.forward(inputs=(gi1[pos[:, 0]], gi2[pos[:, 0]]))
 
         tot_ratings_user = torch.matmul(gu1[user[:, 0]],
-                                        torch.transpose(gu2[user[:, 0]], 0, 1))
+                                        torch.transpose(gu2, 0, 1))
         tot_ratings_item = torch.matmul(gi1[pos[:, 0]],
-                                        torch.transpose(gi2[pos[:, 0]], 0, 1))
+                                        torch.transpose(gi2, 0, 1))
 
         ssl_logits_user = tot_ratings_user - pos_ratings_user[:, None]
         ssl_logits_item = tot_ratings_item - pos_ratings_item[:, None]

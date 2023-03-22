@@ -88,8 +88,9 @@ class SGL(RecMixin, BaseRecommenderModel):
                                           torch.tensor(self.edge_index[0], dtype=torch.int64)], dim=0),
                            sparse_sizes=(self._num_users + self._num_items,
                                          self._num_users + self._num_items))
+        self._general_adj = adj
         self.users = list(range(self._num_users))
-        self.items = list(range(self._num_items))
+        self.items = list(range(self._num_users, self._num_users + self._num_items))
         self.interactions = list(range(self.edge_index.shape[1]))
 
         self._model = SGLModel(
@@ -185,9 +186,12 @@ class SGL(RecMixin, BaseRecommenderModel):
     def get_recommendations(self, k: int = 100):
         predictions_top_k_test = {}
         predictions_top_k_val = {}
+        self._model.eval()
+        gu, gi = self._model.propagate_embeddings(self._general_adj)
+        self._model.train()
         for index, offset in enumerate(range(0, self._num_users, self._batch_size)):
             offset_stop = min(offset + self._batch_size, self._num_users)
-            predictions = self._model.predict(offset, offset_stop)
+            predictions = self._model.predict(gu[offset: offset_stop], gi)
             recs_val, recs_test = self.process_protocol(k, predictions, offset, offset_stop)
             predictions_top_k_val.update(recs_val)
             predictions_top_k_test.update(recs_test)

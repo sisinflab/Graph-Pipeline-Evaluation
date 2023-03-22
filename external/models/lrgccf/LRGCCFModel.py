@@ -14,6 +14,7 @@ import torch
 import torch_geometric
 import numpy as np
 import random
+from torch_sparse import fill_diag
 
 
 class LRGCCFModel(torch.nn.Module, ABC):
@@ -49,15 +50,15 @@ class LRGCCFModel(torch.nn.Module, ABC):
         self.l_w = l_w
         self.n_layers = n_layers
         self.weight_size_list = [self.embed_k] * (self.n_layers + 1)
-        self.adj = adj
+        self.adj = fill_diag(adj, 1.)
         self.normalize = normalize
 
         self.Gu = torch.nn.Embedding(self.num_users, self.embed_k)
-        torch.nn.init.normal_(self.Gu.weight, std=0.01)
         self.Gu.to(self.device)
         self.Gi = torch.nn.Embedding(self.num_items, self.embed_k)
-        torch.nn.init.normal_(self.Gi.weight, std=0.01)
         self.Gi.to(self.device)
+        torch.nn.init.normal_(self.Gu.weight, std=0.01)
+        torch.nn.init.normal_(self.Gi.weight, std=0.01)
 
         propagation_network_list = []
 
@@ -74,9 +75,9 @@ class LRGCCFModel(torch.nn.Module, ABC):
         all_embeddings = [ego_embeddings]
 
         for layer in range(0, self.n_layers):
-            all_embeddings += [torch.nn.functional.normalize(list(
+            all_embeddings += [list(
                 self.propagation_network.children()
-            )[layer](all_embeddings[layer].to(self.device), self.adj.to(self.device)), p=2, dim=1)]
+            )[layer](all_embeddings[layer].to(self.device), self.adj.to(self.device))]
 
         all_embeddings = torch.cat(all_embeddings, dim=1)
         gu, gi = torch.split(all_embeddings, [self.num_users, self.num_items], 0)

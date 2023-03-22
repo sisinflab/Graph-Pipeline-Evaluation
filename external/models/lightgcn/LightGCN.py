@@ -4,7 +4,7 @@ import torch
 import os
 
 from elliot.utils.write import store_recommendation
-from elliot.dataset.samplers import custom_sampler as cs
+from .custom_sampler import Sampler
 from elliot.recommender import BaseRecommenderModel
 from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.recommender_utils_mixin import RecMixin
@@ -13,8 +13,6 @@ from .LightGCNModel import LightGCNModel
 from torch_sparse import SparseTensor
 
 import math
-
-import json
 
 
 class LightGCN(RecMixin, BaseRecommenderModel):
@@ -49,11 +47,6 @@ class LightGCN(RecMixin, BaseRecommenderModel):
     """
     @init_charger
     def __init__(self, data, config, params, *args, **kwargs):
-
-        self._sampler = cs.Sampler(self._data.i_train_dict)
-        if self._batch_size < 1:
-            self._batch_size = self._num_users
-
         ######################################
 
         self._params_list = [
@@ -65,15 +58,9 @@ class LightGCN(RecMixin, BaseRecommenderModel):
         ]
         self.autoset_params()
 
-        folder = os.path.dirname(data.config.data_config.train_path)
-
-        with open(folder + '/private_users.tsv', 'w') as f:
-            for k, v in data.private_users.items():
-                f.write(str(k) + '\t' + str(v) + '\n')
-
-        with open(folder + '/private_items.tsv', 'w') as f:
-            for k, v in data.private_items.items():
-                f.write(str(k) + '\t' + str(v) + '\n')
+        self._sampler = Sampler(self._data.i_train_dict, seed=self._seed)
+        if self._batch_size < 1:
+            self._batch_size = self._num_users
 
         row, col = data.sp_i_train.nonzero()
         col = [c + self._num_users for c in col]
@@ -109,7 +96,8 @@ class LightGCN(RecMixin, BaseRecommenderModel):
         for it in self.iterate(self._epochs):
             loss = 0
             steps = 0
-            with tqdm(total=int(self._data.transactions // self._batch_size), disable=not self._verbose) as t:
+            n_batch = int(self._data.transactions / self._batch_size) if self._data.transactions % self._batch_size == 0 else int(self._data.transactions / self._batch_size) + 1
+            with tqdm(total=n_batch, disable=not self._verbose) as t:
                 for batch in self._sampler.step(self._data.transactions, self._batch_size):
                     steps += 1
                     loss += self._model.train_step(batch)

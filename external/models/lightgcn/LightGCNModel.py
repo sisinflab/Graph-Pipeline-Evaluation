@@ -44,12 +44,12 @@ class LightGCNModel(torch.nn.Module, ABC):
         self.adj = adj
         self.normalize = normalize
 
-        self.Gu = torch.nn.Parameter(
-            torch.nn.init.xavier_normal_(torch.empty((self.num_users, self.embed_k))))
-        self.Gu.to(self.device)
-        self.Gi = torch.nn.Parameter(
-            torch.nn.init.xavier_normal_(torch.empty((self.num_items, self.embed_k))))
-        self.Gi.to(self.device)
+        self.Gu = torch.nn.Embedding(
+            num_embeddings=self.num_users, embedding_dim=self.embed_k)
+        self.Gi = torch.nn.Embedding(
+            num_embeddings=self.num_items, embedding_dim=self.embed_k)
+        torch.nn.init.normal_(self.Gu.weight, std=0.1)
+        torch.nn.init.normal_(self.Gi.weight, std=0.1)
 
         propagation_network_list = []
 
@@ -63,7 +63,7 @@ class LightGCNModel(torch.nn.Module, ABC):
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
     def propagate_embeddings(self, evaluate=False):
-        ego_embeddings = torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0)
+        ego_embeddings = torch.cat((self.Gu.weight.to(self.device), self.Gi.weight.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
 
         for layer in range(0, self.n_layers):
@@ -81,7 +81,8 @@ class LightGCNModel(torch.nn.Module, ABC):
         if evaluate:
             self.propagation_network.train()
 
-        all_embeddings = sum([all_embeddings[k] * self.alpha[k] for k in range(len(all_embeddings))])
+        all_embeddings = torch.mean(torch.stack(all_embeddings, 0), dim=0)
+        # all_embeddings = sum([all_embeddings[k] * self.alpha[k] for k in range(len(all_embeddings))])
         gu, gi = torch.split(all_embeddings, [self.num_users, self.num_items], 0)
 
         return gu, gi
@@ -96,17 +97,17 @@ class LightGCNModel(torch.nn.Module, ABC):
         return xui
 
     def predict(self, gu, gi, **kwargs):
-        return torch.matmul(gu.to(self.device), torch.transpose(gi.to(self.device), 0, 1))
+        return torch.sigmoid(torch.matmul(gu.to(self.device), torch.transpose(gi.to(self.device), 0, 1)))
 
     def train_step(self, batch):
         gu, gi = self.propagate_embeddings()
         user, pos, neg = batch
         xu_pos = self.forward(inputs=(gu[user[:, 0]], gi[pos[:, 0]]))
         xu_neg = self.forward(inputs=(gu[user[:, 0]], gi[neg[:, 0]]))
-        difference = torch.clamp(xu_pos - xu_neg, -80.0, 1e8)
-        loss = torch.sum(self.softplus(-difference))
-        reg_loss = self.l_w * (torch.norm(self.Gu, 2) +
-                               torch.norm(self.Gi, 2))
+        loss = torch.mean(torch.nn.functional.softplus(xu_neg - xu_pos))
+        reg_loss = self.l_w * (1 / 2) * (self.Gu.weight[user[:, 0]].norm(2).pow(2) +
+                                         self.Gi.weight[pos[:, 0]].norm(2).pow(2) +
+                                         self.Gi.weight[neg[:, 0]].norm(2).pow(2)) / float(batch[0].shape[0])
         loss += reg_loss
 
         self.optimizer.zero_grad()

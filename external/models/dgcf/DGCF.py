@@ -13,7 +13,7 @@ import torch
 import os
 
 from elliot.utils.write import store_recommendation
-from elliot.dataset.samplers import custom_sampler as cs
+from .custom_sampler import Sampler
 from elliot.recommender import BaseRecommenderModel
 from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.recommender_utils_mixin import RecMixin
@@ -61,12 +61,6 @@ class DGCF(RecMixin, BaseRecommenderModel):
     """
     @init_charger
     def __init__(self, data, config, params, *args, **kwargs):
-
-        self._sampler = cs.Sampler(self._data.i_train_dict)
-
-        if self._batch_size < 1:
-            self._batch_size = self._num_users
-
         ######################################
 
         self._params_list = [
@@ -81,6 +75,10 @@ class DGCF(RecMixin, BaseRecommenderModel):
         ]
         self.autoset_params()
 
+        self._sampler = Sampler(self._data.i_train_dict, self._batch_size, self._seed)
+        if self._batch_size < 1:
+            self._batch_size = self._num_users
+
         row, col = data.sp_i_train.nonzero()
         col = [c + self._num_users for c in col]
         self.edge_index = np.array([list(row) + col, col + list(row)])
@@ -92,7 +90,6 @@ class DGCF(RecMixin, BaseRecommenderModel):
             embed_k=self._factors,
             l_w_bpr=self._l_w_bpr,
             l_w_ind=self._l_w_ind,
-            ind_batch_size=self._ind_batch_size,
             n_layers=self._n_layers,
             intents=self._intents,
             routing_iterations=self._routing_iterations,
@@ -113,10 +110,14 @@ class DGCF(RecMixin, BaseRecommenderModel):
         for it in self.iterate(self._epochs):
             loss = 0
             steps = 0
-            with tqdm(total=int(self._data.transactions // self._batch_size), disable=not self._verbose) as t:
-                for batch in self._sampler.step(self._data.transactions, self._batch_size):
+            n_batch = int(self._data.transactions / self._batch_size) if self._data.transactions % self._batch_size == 0 else int(self._data.transactions / self._batch_size) + 1
+            cor_batch_size = int(max(self._num_users / n_batch, self._num_items / n_batch))
+            with tqdm(total=n_batch, disable=not self._verbose) as t:
+                for _ in range(n_batch):
+                    user, pos, neg = self._sampler.step()
                     steps += 1
-                    loss += self._model.train_step(batch)
+                    cor_users, cor_items = self._sampler.sample_cor_samples(cor_batch_size)
+                    loss += self._model.train_step((user, pos, neg), cor_users, cor_items)
 
                     if math.isnan(loss) or math.isinf(loss) or (not loss):
                         break
@@ -135,12 +136,11 @@ class DGCF(RecMixin, BaseRecommenderModel):
     def get_recommendations(self, k: int = 100):
         predictions_top_k_test = {}
         predictions_top_k_val = {}
-        gu, gi = self._model.propagate_embeddings(evaluate=True)
-        gu, gi = torch.reshape(gu, (gu.shape[0], gu.shape[1] * gu.shape[2])), torch.reshape(gi, (
-            gi.shape[0], gi.shape[1] * gi.shape[2]))
+        _, _, _, ua_embeddings_t, ia_embeddings_t = \
+            self._model.propagate_embeddings(self._model.is_pick)
         for index, offset in enumerate(range(0, self._num_users, self._batch_size)):
             offset_stop = min(offset + self._batch_size, self._num_users)
-            predictions = self._model.predict(gu[offset: offset_stop], gi)
+            predictions = self._model.predict(ua_embeddings_t[offset: offset_stop], ia_embeddings_t)
             recs_val, recs_test = self.process_protocol(k, predictions, offset, offset_stop)
             predictions_top_k_val.update(recs_val)
             predictions_top_k_test.update(recs_test)

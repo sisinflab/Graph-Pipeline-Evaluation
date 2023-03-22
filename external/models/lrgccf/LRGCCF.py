@@ -13,7 +13,7 @@ import torch
 import os
 
 from elliot.utils.write import store_recommendation
-from elliot.dataset.samplers import custom_sampler_batch as csb
+from .custom_sampler import BPRData
 from elliot.recommender import BaseRecommenderModel
 from elliot.recommender.base_recommender_model import init_charger
 from elliot.recommender.recommender_utils_mixin import RecMixin
@@ -54,6 +54,7 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
           l_w: 0.1
           n_layers: 2
     """
+
     @init_charger
     def __init__(self, data, config, params, *args, **kwargs):
         ######################################
@@ -63,13 +64,17 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
             ("_factors", "factors", "factors", 64, int, None),
             ("_l_w", "l_w", "l_w", 0.01, float, None),
             ("_n_layers", "n_layers", "n_layers", 1, int, None),
+            ("_num_neg", "num_neg", "num_neg", 1, int, None),
             ("_normalize", "normalize", "normalize", True, bool, None)
         ]
         self.autoset_params()
 
-        self._sampler = csb.Sampler(self._data.i_train_dict, self._seed)
-        if self._batch_size < 1:
-            self._batch_size = self._num_users
+        self._sampler = BPRData(train_dict=self._data.i_train_dict,
+                                num_item=self._num_items,
+                                num_ng=self._num_neg,
+                                seed=self._seed,
+                                batch_size=self._batch_size,
+                                data_set_count=self._data.transactions)
 
         row, col = data.sp_i_train.nonzero()
         col = [c + self._num_users for c in col]
@@ -106,8 +111,10 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
             loss = 0
             steps = 0
             self._model.train()
-            with tqdm(total=int(self._data.transactions // self._batch_size), disable=not self._verbose) as t:
-                for batch in self._sampler.step(self._data.transactions, self._batch_size):
+            self._sampler.ng_sample()
+            n_batch = int(self._data.transactions / self._batch_size) if self._data.transactions % self._batch_size == 0 else int(self._data.transactions / self._batch_size) + 1
+            with tqdm(total=n_batch, disable=not self._verbose) as t:
+                for batch in self._sampler.train_loader:
                     steps += 1
                     loss += self._model.train_step(batch)
 
@@ -155,7 +162,7 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
             self._results.append(result_dict)
 
             if it is not None:
-                self.logger.info(f'Epoch {(it + 1)}/{self._epochs} loss {loss/(it + 1):.5f}')
+                self.logger.info(f'Epoch {(it + 1)}/{self._epochs} loss {loss / (it + 1):.5f}')
             else:
                 self.logger.info(f'Finished')
 
