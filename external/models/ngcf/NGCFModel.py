@@ -80,7 +80,7 @@ class NGCFModel(torch.nn.Module, ABC):
         for layer in range(self.n_layers):
             all_embeddings += [torch.nn.functional.normalize(self.dropout_layers[embedding_idx](list(
                 self.propagation_network.children()
-            )[layer](all_embeddings[embedding_idx].to(self.device), adj)), p=2, dim=1)]
+            )[layer](all_embeddings[embedding_idx].to(self.device), adj.to(self.device))), p=2, dim=1)]
             embedding_idx += 1
 
         all_embeddings = torch.cat(all_embeddings, 1)
