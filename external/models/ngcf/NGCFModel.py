@@ -65,7 +65,7 @@ class NGCFModel(torch.nn.Module, ABC):
         for layer in range(self.n_layers):
             propagation_network_list.append((NGCFLayer(self.weight_size_list[layer],
                                                        self.weight_size_list[layer + 1]), 'x, edge_index -> x'))
-            self.dropout_layers.append(torch.nn.Dropout(p=1 - self.message_dropout))
+            self.dropout_layers.append(torch.nn.Dropout(p=self.message_dropout))
 
         self.propagation_network = torch_geometric.nn.Sequential('x, edge_index', propagation_network_list)
         self.propagation_network.to(self.device)
