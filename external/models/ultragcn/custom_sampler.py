@@ -41,4 +41,4 @@ class Sampler:
 
         neg_items = torch.from_numpy(neg_items)
 
-        return pos_train_data[0], pos_train_data[1], neg_items  # users, pos_items, neg_items
+        return pos_train_data[0].long(), pos_train_data[1].long(), neg_items.long()  # users, pos_items, neg_items

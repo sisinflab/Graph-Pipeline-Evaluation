@@ -12,31 +12,31 @@ experiment:
   gpu: -1
   external_models_path: ../external/models/__init__.py
   models:
-    external.NGCF:
-      meta:
-        hyper_opt_alg: grid
-        verbose: True
-        save_weights: False
-        validation_rate: 10
-        validation_metric: Recall@20
-        restore: False
-        write_best_iterations: True
-      lr: 0.0005
-      epochs: 200
-      factors: 64
-      batch_size: 1024
-      l_w: 1e-5
-      n_layers: 3
-      weight_size: 64
-      node_dropout: 0.1
-      message_dropout: 0.1
-      normalize: True
-      seed: 42
-      early_stopping:
-        patience: 5
-        mode: auto
-        monitor: Recall@20
-        verbose: True
+#    external.NGCF:
+#      meta:
+#        hyper_opt_alg: grid
+#        verbose: True
+#        save_weights: False
+#        validation_rate: 10
+#        validation_metric: Recall@20
+#        restore: False
+#        write_best_iterations: True
+#      lr: 0.0005
+#      epochs: 200
+#      factors: 64
+#      batch_size: 1024
+#      l_w: 1e-5
+#      n_layers: 3
+#      weight_size: 64
+#      node_dropout: 0.1
+#      message_dropout: 0.1
+#      normalize: True
+#      seed: 42
+#      early_stopping:
+#        patience: 5
+#        mode: auto
+#        monitor: Recall@20
+#        verbose: True
 #    external.LightGCN:
 #      meta:
 #        hyper_opt_alg: grid
@@ -135,36 +135,36 @@ experiment:
 #        monitor: Recall@20
 #        verbose: True
     # 96
-#    external.UltraGCN:
-#      meta:
-#        hyper_opt_alg: grid
-#        verbose: True
-#        save_weights: False
-#        validation_rate: 1
-#        validation_metric: Recall@20
-#        restore: False
-#        write_best_iterations: True
-#      lr: 1e-4
-#      epochs: 2000
-#      factors: 64
-#      batch_size: 512
-#      g: 1e-4
-#      l: 5e-4
-#      w1: 1e-6
-#      w2: 1.0
-#      w3: 1e-6
-#      w4: 1.0
-#      ii_n_n: 10
-#      n_n: 1500
-#      n_w: 300
-#      s_s_p: False
-#      i_w: 0.0001
-#      seed: 123
-#      early_stopping:
-#        patience: 50
-#        mode: auto
-#        monitor: Recall@20
-#        verbose: True
+    external.UltraGCN:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 5
+        validation_metric: Recall@20
+        restore: False
+        write_best_iterations: True
+      lr: 1e-4
+      epochs: 2000
+      factors: 64
+      batch_size: 512
+      g: 1e-4
+      l: 5e-4
+      w1: 1e-6
+      w2: 1.0
+      w3: 1e-6
+      w4: 1.0
+      ii_n_n: 10
+      n_n: 1500
+      n_w: 300
+      s_s_p: False
+      i_w: 1e-4
+      seed: 42
+      early_stopping:
+        patience: 150
+        mode: auto
+        monitor: Recall@20
+        verbose: True
 #    # 40
 #    external.SVDGCN:
 #      meta:

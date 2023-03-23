@@ -134,8 +134,8 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
                 for x in self._sampler.train_loader:
                     steps += 1
                     users, pos_items, neg_items = self._sampler.step(x)
-                    loss += self._model.train_step((torch.from_numpy(users),
-                                                    torch.from_numpy(pos_items),
+                    loss += self._model.train_step((users,
+                                                    pos_items,
                                                     neg_items))
 
                     if math.isnan(loss) or math.isinf(loss) or (not loss):
@@ -144,7 +144,11 @@ class UltraGCN(RecMixin, BaseRecommenderModel):
                     t.set_postfix({'loss': f'{loss / steps:.5f}'})
                     t.update()
 
-            self.evaluate(it, loss / (it + 1))
+            need_test = True
+            if it < 50 and it % 5 != 0:
+                need_test = False
+            if need_test:
+                self.evaluate(it, loss / (it + 1))
 
         if it + 1 == self._epochs and self._write_best_iterations:  # never met an early stopping condition
             with open(self._config.path_output_rec_performance + '/best_iterations.tsv', 'a') as f:
