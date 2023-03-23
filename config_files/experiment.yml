@@ -21,8 +21,8 @@ experiment:
         validation_metric: Recall@20
         restore: False
         write_best_iterations: True
-      lr: 0.0001
-      epochs: 400
+      lr: 0.0005
+      epochs: 200
       factors: 64
       batch_size: 1024
       l_w: 1e-5
