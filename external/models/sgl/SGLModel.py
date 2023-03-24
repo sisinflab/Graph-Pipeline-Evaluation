@@ -139,9 +139,9 @@ class SGLModel(torch.nn.Module, ABC):
 
         # Reg Loss
         reg_loss = self.l2_loss(
-            self.Gu[user[:, 0]],
-            self.Gi[pos[:, 0]],
-            self.Gi[neg[:, 0]],
+            self.Gu.weight[user[:, 0]],
+            self.Gi.weight[pos[:, 0]],
+            self.Gi.weight[neg[:, 0]],
         )
 
         # InfoNCE Loss
