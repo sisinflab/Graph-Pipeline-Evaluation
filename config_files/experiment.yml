@@ -149,14 +149,14 @@ experiment:
       factors: 64
       batch_size: 1024
       g: 1e-4
-      l: 5e-4
+      l: 2.75
       w1: 1e-8
       w2: 1.0
-      w3: 1e-8
-      w4: 1.0
+      w3: 1.0
+      w4: 1e-8
       ii_n_n: 10
-      n_n: 800
-      n_w: 300
+      n_n: 500
+      n_w: 500
       s_s_p: False
       i_w: 1e-4
       seed: 42
