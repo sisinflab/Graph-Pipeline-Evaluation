@@ -49,8 +49,8 @@ class SGLModel(torch.nn.Module, ABC):
 
         self.Gu = torch.nn.Embedding(self.num_users, self.embed_k)
         self.Gi = torch.nn.Embedding(self.num_items, self.embed_k)
-        torch.nn.init.xavier_uniform_(self.Gu)
-        torch.nn.init.xavier_uniform_(self.Gi)
+        torch.nn.init.xavier_uniform_(self.Gu.weight)
+        torch.nn.init.xavier_uniform_(self.Gi.weight)
         self.Gu.to(self.device)
         self.Gi.to(self.device)
 
@@ -65,7 +65,7 @@ class SGLModel(torch.nn.Module, ABC):
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
     def propagate_embeddings(self, adj):
-        ego_embeddings = torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0)
+        ego_embeddings = torch.cat((self.Gu.weight.to(self.device), self.Gi.weight.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
 
         for layer in range(0, self.n_layers):
