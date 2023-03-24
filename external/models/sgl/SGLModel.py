@@ -47,11 +47,11 @@ class SGLModel(torch.nn.Module, ABC):
         self.ssl_reg = ssl_reg
         self.sampling = sampling
 
-        self.Gu = torch.nn.Parameter(
-            torch.nn.init.xavier_normal_(torch.empty((self.num_users, self.embed_k))))
+        self.Gu = torch.nn.Embedding(self.num_users, self.embed_k)
+        self.Gi = torch.nn.Embedding(self.num_items, self.embed_k)
+        torch.nn.init.xavier_uniform_(self.Gu)
+        torch.nn.init.xavier_uniform_(self.Gi)
         self.Gu.to(self.device)
-        self.Gi = torch.nn.Parameter(
-            torch.nn.init.xavier_normal_(torch.empty((self.num_items, self.embed_k))))
         self.Gi.to(self.device)
 
         propagation_network_list = []
