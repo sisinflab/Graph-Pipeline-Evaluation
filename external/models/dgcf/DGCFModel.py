@@ -196,7 +196,7 @@ class DGCFModel(torch.nn.Module, ABC):
                 # pack (n_factors) adjacency values into one [n_factors, all_h_list] tensor
                 A_iter_values = torch.stack(A_iter_values, 0)
                 # add all layer-wise attentive weights up.
-                A_values += A_iter_values.to(self.device)
+                A_values = A_values.to(self.device) + A_iter_values.to(self.device)
 
                 if t == self.routing_iterations - 1:
                     # layer_embeddings = iter_embeddings
