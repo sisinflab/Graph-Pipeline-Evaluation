@@ -27,7 +27,7 @@ class DGCFModel(torch.nn.Module, ABC):
                  routing_iterations,
                  edge_index,
                  random_seed,
-                 pick=1,
+                 pick=0,
                  name="DGCF",
                  **kwargs
                  ):
