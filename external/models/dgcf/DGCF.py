@@ -68,7 +68,6 @@ class DGCF(RecMixin, BaseRecommenderModel):
             ("_factors", "factors", "factors", 64, int, None),
             ("_l_w_bpr", "l_w_bpr", "l_w_bpr", 0.01, float, None),
             ("_l_w_ind", "l_w_ind", "l_w_ind", 0.01, float, None),
-            ("_ind_batch_size", "ind_batch_size", "ind_batch_size", 512, int, None),
             ("_n_layers", "n_layers", "n_layers", 3, int, None),
             ("_intents", "intents", "intents", 16, int, None),
             ("_routing_iterations", "routing_iterations", "routing_iterations", 2, int, None)
