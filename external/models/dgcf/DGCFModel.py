@@ -58,9 +58,7 @@ class DGCFModel(torch.nn.Module, ABC):
 
         initializer = torch.nn.init.xavier_uniform_
         self.Gu = torch.nn.Parameter(initializer(torch.empty(self.num_users, self.embed_k)))
-        self.Gu.to(self.device)
         self.Gi = torch.nn.Parameter(initializer(torch.empty(self.num_items, self.embed_k)))
-        self.Gi.to(self.device)
 
         self.pick_level = 1e10
         self.A_in_shape = (self.num_users + self.num_items, self.num_users + self.num_items)
@@ -129,7 +127,7 @@ class DGCFModel(torch.nn.Module, ABC):
 
         A_values = torch.ones(size=(self.intents, self.edge_index.shape[1])).to(self.device)
 
-        ego_embeddings = torch.cat((self.Gu, self.Gi), 0)
+        ego_embeddings = torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
 
         output_factors_distribution = []
