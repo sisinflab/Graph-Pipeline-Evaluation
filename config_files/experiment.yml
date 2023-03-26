@@ -103,7 +103,6 @@ experiment:
       normalize: True
       num_neg: 5
       seed: 42
-      num_neg: 1
     # 8
 #    external.SGL:
 #      meta:
