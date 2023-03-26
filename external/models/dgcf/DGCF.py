@@ -135,10 +135,10 @@ class DGCF(RecMixin, BaseRecommenderModel):
     def get_recommendations(self, k: int = 100):
         predictions_top_k_test = {}
         predictions_top_k_val = {}
-        ua_embeddings_t, ia_embeddings_t = self._model.propagate_embeddings(self._model.is_pick)
+        ua_embeddings, ia_embeddings = self._model.propagate_embeddings(self._model.is_pick)
         for index, offset in enumerate(range(0, self._num_users, self._batch_size)):
             offset_stop = min(offset + self._batch_size, self._num_users)
-            predictions = self._model.predict(ua_embeddings_t[offset: offset_stop], ia_embeddings_t)
+            predictions = self._model.predict(ua_embeddings[offset: offset_stop], ia_embeddings)
             recs_val, recs_test = self.process_protocol(k, predictions, offset, offset_stop)
             predictions_top_k_val.update(recs_val)
             predictions_top_k_test.update(recs_test)
