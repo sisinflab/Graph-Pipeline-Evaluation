@@ -175,7 +175,7 @@ class DGCFModel(torch.nn.Module, ABC):
 
                     # get the attentive weights
                     # .... A_factor_values is a dense tensor with the size of [all_h_list,1]
-                    A_factor_values = torch.sum(torch.mul(head_factor_embedings.to(self.device), torch.tanh(tail_factor_embedings.to(self.device))),
+                    A_factor_values = torch.sum(torch.mul(head_factor_embedings, torch.tanh(tail_factor_embedings)),
                                                 dim=1)
 
                     # update the attentive weights
