@@ -126,6 +126,7 @@ class DGCFModel(torch.nn.Module, ABC):
         p_train = False
 
         A_values = torch.ones(size=(self.intents, self.edge_index.shape[1])).to(self.device)
+        A_values = torch.autograd.Variable(A_values, requires_grad=True)
 
         ego_embeddings = torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
@@ -164,22 +165,21 @@ class DGCFModel(torch.nn.Module, ABC):
                     # .... head_factor_embeddings is a dense tensor with the size of [all_h_list, embed_size/n_factors]
                     # .... analogous to tail_factor_embeddings
 
-                    with torch.no_grad():
-                        head_factor_embedings = factor_embeddings[self.all_h_list]
-                        tail_factor_embedings = ego_layer_embeddings[i][self.all_t_list]
+                    head_factor_embedings = factor_embeddings[self.all_h_list]
+                    tail_factor_embedings = ego_layer_embeddings[i][self.all_t_list]
 
-                        # .... constrain the vector length
-                        # .... make the following attentive weights within the range of (0,1)
-                        head_factor_embedings = torch.nn.functional.normalize(head_factor_embedings, dim=1)
-                        tail_factor_embedings = torch.nn.functional.normalize(tail_factor_embedings, dim=1)
+                    # .... constrain the vector length
+                    # .... make the following attentive weights within the range of (0,1)
+                    head_factor_embedings = torch.nn.functional.normalize(head_factor_embedings, dim=1)
+                    tail_factor_embedings = torch.nn.functional.normalize(tail_factor_embedings, dim=1)
 
-                        # get the attentive weights
-                        # .... A_factor_values is a dense tensor with the size of [all_h_list,1]
-                        A_factor_values = torch.sum(torch.mul(head_factor_embedings, torch.tanh(tail_factor_embedings)),
-                                                    dim=1)
+                    # get the attentive weights
+                    # .... A_factor_values is a dense tensor with the size of [all_h_list,1]
+                    A_factor_values = torch.sum(torch.mul(head_factor_embedings, torch.tanh(tail_factor_embedings)),
+                                                dim=1)
 
-                        # update the attentive weights
-                        A_iter_values.append(A_factor_values.to(self.device))
+                    # update the attentive weights
+                    A_iter_values.append(A_factor_values.to(self.device))
 
                 # pack (n_factors) adjacency values into one [n_factors, all_h_list] tensor
                 A_iter_values = torch.stack(A_iter_values, 0)
