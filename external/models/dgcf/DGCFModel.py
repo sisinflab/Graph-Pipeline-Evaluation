@@ -131,19 +131,15 @@ class DGCFModel(torch.nn.Module, ABC):
 
         ego_embeddings = torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
-        all_embeddings_t = [ego_embeddings]
 
         output_factors_distribution = []
 
         for layer in range(self.n_layers):
             layer_embeddings = []
-            layer_embeddings_t = []
             ego_layer_embeddings = torch.split(ego_embeddings, self.embed_k // self.intents, 1)
-            ego_layer_embeddings_t = torch.split(ego_embeddings, self.embed_k // self.intents, 1)
 
             for t in range(self.routing_iterations):
                 iter_embeddings = []
-                iter_embeddings_t = []
                 A_iter_values = []
 
                 if t == self.routing_iterations - 1:
@@ -153,26 +149,18 @@ class DGCFModel(torch.nn.Module, ABC):
                 A_factors, D_col_factors, D_row_factors = self._convert_A_values_to_A_factors_with_P(self.intents,
                                                                                                      A_values,
                                                                                                      pick=p_train)
-                A_factors_t, D_col_factors_t, D_row_factors_t = self._convert_A_values_to_A_factors_with_P(self.intents,
-                                                                                                           A_values,
-                                                                                                           pick=p_test)
 
                 for i in range(0, self.intents):
                     factor_embeddings = torch.sparse.mm(D_col_factors[i].to(self.device), ego_layer_embeddings[i].to(self.device))
-                    factor_embeddings_t = torch.sparse.mm(D_col_factors_t[i].to(self.device), ego_layer_embeddings_t[i].to(self.device))
 
-                    factor_embeddings_t = torch.sparse.mm(A_factors_t[i].to(self.device), factor_embeddings_t.to(self.device))
                     factor_embeddings = torch.sparse.mm(A_factors[i].to(self.device), factor_embeddings.to(self.device))
 
                     factor_embeddings = torch.sparse.mm(D_col_factors[i].to(self.device), factor_embeddings.to(self.device))
-                    factor_embeddings_t = torch.sparse.mm(D_col_factors_t[i].to(self.device), factor_embeddings_t.to(self.device))
 
                     iter_embeddings.append(factor_embeddings.to(self.device))
-                    iter_embeddings_t.append(factor_embeddings_t.to(self.device))
 
                     if t == self.routing_iterations - 1:
                         layer_embeddings = iter_embeddings
-                        layer_embeddings_t = iter_embeddings_t
 
                     # get the factor-wise embeddings
                     # .... head_factor_embeddings is a dense tensor with the size of [all_h_list, embed_size/n_factors]
@@ -204,24 +192,17 @@ class DGCFModel(torch.nn.Module, ABC):
 
             # sum messages of neighbors, [n_users+n_items, embed_size]
             side_embeddings = torch.cat(layer_embeddings, 1)
-            side_embeddings_t = torch.cat(layer_embeddings_t, 1)
 
             ego_embeddings = side_embeddings
-            ego_embeddings_t = side_embeddings_t
             # concatenate outputs of all layers
-            all_embeddings_t += [ego_embeddings_t]
             all_embeddings += [ego_embeddings]
 
         all_embeddings = torch.stack(all_embeddings, 1)
         all_embeddings = torch.mean(all_embeddings, dim=1)
 
-        all_embeddings_t = torch.stack(all_embeddings_t, 1)
-        all_embeddings_t = torch.mean(all_embeddings_t, dim=1)
-
         u_g_embeddings, i_g_embeddings = torch.split(all_embeddings, [self.num_users, self.num_items], 0)
-        u_g_embeddings_t, i_g_embeddings_t = torch.split(all_embeddings_t, [self.num_users, self.num_items], 0)
 
-        return u_g_embeddings, i_g_embeddings, output_factors_distribution, u_g_embeddings_t, i_g_embeddings_t
+        return u_g_embeddings, i_g_embeddings
 
     def forward(self, inputs, **kwargs):
         gu, gi = inputs
@@ -271,11 +252,7 @@ class DGCFModel(torch.nn.Module, ABC):
     def train_step(self, batch, cor_users, cor_items):
         users, pos, neg = batch
 
-        ua_embeddings, \
-            ia_embeddings, \
-            f_weight, \
-            _, \
-            _ = self.propagate_embeddings(pick_=self.is_pick)
+        ua_embeddings, ia_embeddings = self.propagate_embeddings(pick_=self.is_pick)
 
         u_g_embeddings = ua_embeddings[users]
         pos_i_g_embeddings = ia_embeddings[pos]
