@@ -78,7 +78,7 @@ experiment:
       n_layers: 1
       routing_iterations: 2
       intents: 4
-      seed: 123
+      seed: 42
       early_stopping:
         patience: 40
         mode: auto
