@@ -112,7 +112,7 @@ class LRGCCF(RecMixin, BaseRecommenderModel):
             steps = 0
             self._model.train()
             self._sampler.ng_sample()
-            n_batch = int(self._data.transactions / self._batch_size) if self._data.transactions % self._batch_size == 0 else int(self._data.transactions / self._batch_size) + 1
+            n_batch = int((self._data.transactions * self._num_neg) / self._batch_size) if (self._data.transactions * self._num_neg) % self._batch_size == 0 else int((self._data.transactions * self._num_neg) / self._batch_size) + 1
             with tqdm(total=n_batch, disable=not self._verbose) as t:
                 for batch in self._sampler.train_loader:
                     steps += 1

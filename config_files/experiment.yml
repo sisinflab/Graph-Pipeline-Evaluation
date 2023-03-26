@@ -60,32 +60,7 @@ experiment:
 #        monitor: Recall@20
 #        verbose: True
 #    # 8
-    external.DGCF:
-      meta:
-        hyper_opt_alg: grid
-        verbose: True
-        save_weights: False
-        validation_rate: 1
-        validation_metric: Recall@20
-        restore: False
-        write_best_iterations: True
-      lr: 0.001
-      epochs: 3000
-      factors: 64
-      batch_size: 1024
-      l_w_bpr: 1e-3
-      l_w_ind: 0.01
-      n_layers: 1
-      routing_iterations: 2
-      intents: 4
-      seed: 42
-      early_stopping:
-        patience: 40
-        mode: auto
-        monitor: Recall@20
-        verbose: True
-#    # 64
-#    external.LRGCCF:
+#    external.DGCF:
 #      meta:
 #        hyper_opt_alg: grid
 #        verbose: True
@@ -95,19 +70,40 @@ experiment:
 #        restore: False
 #        write_best_iterations: True
 #      lr: 0.001
-#      epochs: 1000
+#      epochs: 3000
 #      factors: 64
 #      batch_size: 1024
-#      l_w: 0.01
-#      n_layers: [1, 2, 3, 4]
-#      normalize: [True, False]
-#      seed: 123
-#      num_neg: 1
+#      l_w_bpr: 1e-3
+#      l_w_ind: 0.01
+#      n_layers: 1
+#      routing_iterations: 2
+#      intents: 4
+#      seed: 42
 #      early_stopping:
-#        patience: 50
+#        patience: 40
 #        mode: auto
 #        monitor: Recall@20
 #        verbose: True
+#    # 64
+    external.LRGCCF:
+      meta:
+        hyper_opt_alg: grid
+        verbose: True
+        save_weights: False
+        validation_rate: 1
+        validation_metric: Recall@20
+        restore: False
+        write_best_iterations: True
+      lr: 0.005
+      epochs: 350
+      factors: 64
+      batch_size: 2048
+      l_w: 0.01
+      n_layers: 3
+      normalize: True
+      num_neg: 5
+      seed: 42
+      num_neg: 1
     # 8
 #    external.SGL:
 #      meta:
