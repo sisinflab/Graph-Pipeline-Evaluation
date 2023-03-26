@@ -165,8 +165,8 @@ class DGCFModel(torch.nn.Module, ABC):
                     # get the factor-wise embeddings
                     # .... head_factor_embeddings is a dense tensor with the size of [all_h_list, embed_size/n_factors]
                     # .... analogous to tail_factor_embeddings
-                    head_factor_embedings = factor_embeddings[self.all_h_list].to(self.device)
-                    tail_factor_embedings = ego_layer_embeddings[i][self.all_t_list].to(self.device)
+                    head_factor_embedings = factor_embeddings[self.all_h_list]
+                    tail_factor_embedings = ego_layer_embeddings[i][self.all_t_list]
 
                     # .... constrain the vector length
                     # .... make the following attentive weights within the range of (0,1)
