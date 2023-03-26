@@ -170,8 +170,8 @@ class DGCFModel(torch.nn.Module, ABC):
 
                     # .... constrain the vector length
                     # .... make the following attentive weights within the range of (0,1)
-                    head_factor_embedings = torch.nn.functional.normalize(head_factor_embedings.to(self.device), dim=1)
-                    tail_factor_embedings = torch.nn.functional.normalize(tail_factor_embedings.to(self.device), dim=1)
+                    head_factor_embedings = torch.nn.functional.normalize(head_factor_embedings, dim=1)
+                    tail_factor_embedings = torch.nn.functional.normalize(tail_factor_embedings, dim=1)
 
                     # get the attentive weights
                     # .... A_factor_values is a dense tensor with the size of [all_h_list,1]
