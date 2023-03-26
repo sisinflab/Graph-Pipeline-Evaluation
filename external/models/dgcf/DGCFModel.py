@@ -127,7 +127,7 @@ class DGCFModel(torch.nn.Module, ABC):
         p_test = False
         p_train = False
 
-        A_values = torch.ones(size=(self.intents, self.edge_index.shape[1]))
+        A_values = torch.ones(size=(self.intents, self.edge_index.shape[1])).to(self.device)
 
         ego_embeddings = torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
@@ -151,13 +151,13 @@ class DGCFModel(torch.nn.Module, ABC):
                                                                                                      pick=p_train)
 
                 for i in range(0, self.intents):
-                    factor_embeddings = torch.sparse.mm(D_col_factors[i].to(self.device), ego_layer_embeddings[i].to(self.device))
+                    factor_embeddings = torch.sparse.mm(D_col_factors[i], ego_layer_embeddings[i])
 
-                    factor_embeddings = torch.sparse.mm(A_factors[i].to(self.device), factor_embeddings.to(self.device))
+                    factor_embeddings = torch.sparse.mm(A_factors[i], factor_embeddings)
 
-                    factor_embeddings = torch.sparse.mm(D_col_factors[i].to(self.device), factor_embeddings.to(self.device))
+                    factor_embeddings = torch.sparse.mm(D_col_factors[i], factor_embeddings)
 
-                    iter_embeddings.append(factor_embeddings.to(self.device))
+                    iter_embeddings.append(factor_embeddings)
 
                     if t == self.routing_iterations - 1:
                         layer_embeddings = iter_embeddings
