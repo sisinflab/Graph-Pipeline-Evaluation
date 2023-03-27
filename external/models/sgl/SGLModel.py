@@ -64,12 +64,12 @@ class SGLModel(torch.nn.Module, ABC):
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
-    def propagate_embeddings(self, adj):
+    def propagate_embeddings(self, adj, view=False):
         ego_embeddings = torch.cat((self.Gu.weight.to(self.device), self.Gi.weight.to(self.device)), 0)
         all_embeddings = [ego_embeddings]
 
         for layer in range(0, self.n_layers):
-            if self.sampling == 'rw':
+            if self.sampling == 'rw' and view:
                 all_embeddings += [list(
                     self.propagation_network.children()
                 )[layer](all_embeddings[layer].to(self.device), adj[layer].to(self.device))]
@@ -112,8 +112,8 @@ class SGLModel(torch.nn.Module, ABC):
 
     def train_step(self, batch, adj_1, adj_2):
         gu, gi = self.propagate_embeddings(self.adj)
-        gu1, gi1 = self.propagate_embeddings(adj_1)
-        gu2, gi2 = self.propagate_embeddings(adj_2)
+        gu1, gi1 = self.propagate_embeddings(adj_1, view=True)
+        gu2, gi2 = self.propagate_embeddings(adj_2, view=True)
 
         gu1, gi1 = torch.nn.functional.normalize(gu1, dim=1), torch.nn.functional.normalize(gi1, dim=1)
         gu2, gi2 = torch.nn.functional.normalize(gu2, dim=1), torch.nn.functional.normalize(gi2, dim=1)
