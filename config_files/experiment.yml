@@ -97,7 +97,7 @@ experiment:
       lr: 0.005
       epochs: 350
       factors: 64
-      batch_size: 1048576
+      batch_size: 2048
       l_w: 0.01
       n_layers: 3
       normalize: True
