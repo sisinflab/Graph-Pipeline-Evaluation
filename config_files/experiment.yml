@@ -94,10 +94,10 @@ experiment:
         validation_metric: Recall@20
         restore: False
         write_best_iterations: True
-      lr: 0.001
+      lr: 0.005
       epochs: 350
       factors: 64
-      batch_size: 2048
+      batch_size: 1048576
       l_w: 0.01
       n_layers: 3
       normalize: True
