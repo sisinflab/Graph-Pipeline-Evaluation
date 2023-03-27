@@ -13,13 +13,28 @@ experiment:
   gpu: -1
   external_models_path: ../external/models/__init__.py
   models:
-    external.GFCF:
+    external.SGL:
       meta:
         hyper_opt_alg: tpe
         hyper_max_evals: 20
         verbose: True
         save_weights: False
+        validation_rate: 10
         validation_metric: Recall@20
         restore: False
-      svd_factors: [choice, [64, 128, 256]]
-      alpha: [loguniform, -2.30258509299, -0.22314355131]
+        write_best_iterations: True
+      lr: 0.001
+      epochs: 1000
+      batch_size: 128
+      factors: 64
+      l_w: 1e-4
+      n_layers: [choice, [1, 2, 3, 4]]
+      ssl_temp: [loguniform, -2.30258509299, 0]
+      ssl_reg: [loguniform, -5.29831736655, 0]
+      ssl_ratio: [loguniform, -2.30258509299, -0.69314718056]
+      sampling: [choice, [nd, ed, rw]]
+      seed: 2021
+      early_stopping:
+        patience: 10
+        mode: auto
+        monitor: Recall@20
