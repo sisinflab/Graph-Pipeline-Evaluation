@@ -42,6 +42,7 @@ class DGCFModel(torch.nn.Module, ABC):
         torch.cuda.manual_seed(random_seed)
         torch.cuda.manual_seed_all(random_seed)
         torch.backends.cudnn.deterministic = True
+        torch.use_deterministic_algorithms(True)
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -64,7 +65,7 @@ class DGCFModel(torch.nn.Module, ABC):
 
         dgcf_network_list = []
         for layer in range(self.n_layers):
-            dgcf_network_list.append((DGCFLayer(), 'x, edge_index -> x'))
+            dgcf_network_list.append((DGCFLayer(intents=self.intents), 'x, edge_index -> x'))
 
         self.dgcf_network = torch_geometric.nn.Sequential('x, edge_index', dgcf_network_list)
         self.dgcf_network.to(self.device)
