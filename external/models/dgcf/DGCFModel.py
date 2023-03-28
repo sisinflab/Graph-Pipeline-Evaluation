@@ -55,7 +55,29 @@ class DGCFModel(torch.nn.Module, ABC):
         self.intents = intents
         self.routing_iterations = routing_iterations
         self.edge_index = torch.tensor(edge_index, dtype=torch.int64)
+
+        all_h_list, all_t_list = self.edge_index
+        self.all_h_list = torch.LongTensor(all_h_list).to(self.device)
+        self.all_t_list = torch.LongTensor(all_t_list).to(self.device)
+
         self.row, self.col = edge_index[:, :edge_index.shape[1] // 2]
+
+        self.edge2head = torch.LongTensor(np.array([edge_index[0], list(range(edge_index.shape[1]))])).to(self.device)
+        self.head2edge = torch.LongTensor(np.array([list(range(edge_index.shape[1])), edge_index[0]])).to(self.device)
+        self.tail2edge = torch.LongTensor(np.array([list(range(edge_index.shape[1])), edge_index[1]])).to(self.device)
+
+        val_one = torch.ones_like(torch.from_numpy(edge_index[0])).float().to(self.device)
+        num_node = self.num_users + self.num_items
+        self.edge2head_mat = self._build_sparse_tensor(
+            self.edge2head, val_one, (num_node, len(edge_index[0]))
+        )
+        self.head2edge_mat = self._build_sparse_tensor(
+            self.head2edge, val_one, (len(edge_index[0]), num_node)
+        )
+        self.tail2edge_mat = self._build_sparse_tensor(
+            self.tail2edge, val_one, (len(edge_index[0]), num_node)
+        )
+
         self.col -= self.num_users
 
         initializer = torch.nn.init.xavier_uniform_
@@ -72,7 +94,126 @@ class DGCFModel(torch.nn.Module, ABC):
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
-    def propagate_embeddings(self, evaluate=False):
+    def _build_sparse_tensor(self, indices, values, size):
+        # Construct the sparse matrix with indices, values and size.
+        return torch.sparse.FloatTensor(indices, values, size).to(self.device)
+
+    def build_matrix(self, A_values):
+        r"""Get the normalized interaction matrix of users and items according to A_values.
+        Construct the square matrix from the training data and normalize it
+        using the laplace matrix.
+        Args:
+            A_values (torch.cuda.FloatTensor): (num_edge, n_factors)
+        .. math::
+            A_{hat} = D^{-0.5} \times A \times D^{-0.5}
+        Returns:
+            torch.cuda.FloatTensor: Sparse tensor of the normalized interaction matrix. shape: (num_edge, n_factors)
+        """
+        norm_A_values = torch.nn.Softmax(dim=1)(A_values)
+        factor_edge_weight = []
+        for i in range(self.intents):
+            tp_values = norm_A_values[:, i].unsqueeze(1)
+            # (num_edge, 1)
+            d_values = torch.sparse.mm(self.edge2head_mat, tp_values)
+            # (num_node, num_edge) (num_edge, 1) -> (num_node, 1)
+            d_values = torch.clamp(d_values, min=1e-8)
+            d_values = 1.0 / torch.sqrt(d_values)
+            head_term = torch.sparse.mm(self.head2edge_mat, d_values)
+            # (num_edge, num_node) (num_node, 1) -> (num_edge, 1)
+
+            tail_term = torch.sparse.mm(self.tail2edge_mat, d_values)
+            edge_weight = tp_values * head_term * tail_term
+            factor_edge_weight.append(edge_weight)
+        return factor_edge_weight
+
+    def propagate_embeddings(self):
+        ego_embeddings = torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0)
+        all_embeddings = [ego_embeddings.unsqueeze(1)]
+        # initialize with every factor value as 1
+        A_values = torch.ones((self.edge_index.shape[1], self.intents)).to(self.device)
+        A_values = torch.autograd.Variable(A_values, requires_grad=True)
+        for k in range(self.n_layers):
+            layer_embeddings = []
+
+            # split the input embedding table
+            # .... ego_layer_embeddings is a (n_factors)-length list of embeddings
+            # [n_users+n_items, embed_size/n_factors]
+            ego_layer_embeddings = torch.chunk(ego_embeddings, self.intents, 1)
+            for t in range(0, self.routing_iterations):
+                iter_embeddings = []
+                A_iter_values = []
+                factor_edge_weight = self.build_matrix(A_values=A_values)
+                for i in range(0, self.intents):
+                    # update the embeddings via simplified graph convolution layer
+                    edge_weight = factor_edge_weight[i]
+                    # (num_edge, 1)
+                    edge_val = torch.sparse.mm(
+                        self.tail2edge_mat, ego_layer_embeddings[i]
+                    )
+                    # (num_edge, dim / n_factors)
+                    edge_val = edge_val * edge_weight
+                    # (num_edge, dim / n_factors)
+                    factor_embeddings = torch.sparse.mm(self.edge2head_mat, edge_val)
+                    # (num_node, num_edge) (num_edge, dim) -> (num_node, dim)
+
+                    iter_embeddings.append(factor_embeddings)
+
+                    if t == self.routing_iterations - 1:
+                        layer_embeddings = iter_embeddings
+
+                    # get the factor-wise embeddings
+                    # .... head_factor_embeddings is a dense tensor with the size of [all_h_list, embed_size/n_factors]
+                    # .... analogous to tail_factor_embeddings
+                    head_factor_embeddings = torch.index_select(
+                        factor_embeddings, dim=0, index=self.all_h_list
+                    )
+                    tail_factor_embeddings = torch.index_select(
+                        ego_layer_embeddings[i], dim=0, index=self.all_t_list
+                    )
+
+                    # .... constrain the vector length
+                    # .... make the following attentive weights within the range of (0,1)
+                    # to adapt to torch version
+                    head_factor_embeddings = torch.nn.functional.normalize(
+                        head_factor_embeddings, p=2, dim=1
+                    )
+                    tail_factor_embeddings = torch.nn.functional.normalize(
+                        tail_factor_embeddings, p=2, dim=1
+                    )
+
+                    # get the attentive weights
+                    # .... A_factor_values is a dense tensor with the size of [num_edge, 1]
+                    A_factor_values = torch.sum(
+                        head_factor_embeddings * torch.tanh(tail_factor_embeddings),
+                        dim=1,
+                        keepdim=True,
+                    )
+
+                    # update the attentive weights
+                    A_iter_values.append(A_factor_values)
+                A_iter_values = torch.cat(A_iter_values, dim=1)
+                # (num_edge, n_factors)
+                # add all layer-wise attentive weights up.
+                A_values = A_values + A_iter_values
+
+            # sum messages of neighbors, [n_users+n_items, embed_size]
+            side_embeddings = torch.cat(layer_embeddings, dim=1)
+
+            ego_embeddings = side_embeddings
+            # concatenate outputs of all layers
+            all_embeddings += [ego_embeddings.unsqueeze(1)]
+
+        all_embeddings = torch.cat(all_embeddings, dim=1)
+        # (num_node, n_layer + 1, embedding_size)
+        all_embeddings = torch.mean(all_embeddings, dim=1, keepdim=False)
+        # (num_node, embedding_size)
+
+        u_g_embeddings = all_embeddings[: self.num_users, :]
+        i_g_embeddings = all_embeddings[self.num_users:, :]
+
+        return u_g_embeddings, i_g_embeddings
+
+    def propagate_embeddings_old(self, evaluate=False):
         ego_embeddings = torch.split(torch.cat((self.Gu.to(self.device), self.Gi.to(self.device)), 0),
                                      self.embed_k // self.intents, 1)
         ego_embeddings = torch.stack(ego_embeddings, dim=1)
