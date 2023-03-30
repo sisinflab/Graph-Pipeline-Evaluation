@@ -14,7 +14,8 @@ experiment:
   models:
     external.UltraGCN:
       meta:
-        hyper_opt_alg: grid
+        hyper_opt_alg: tpe
+        hyper_max_evals: 20
         verbose: True
         save_weights: False
         validation_rate: 5
