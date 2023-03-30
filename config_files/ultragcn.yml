@@ -24,7 +24,7 @@ experiment:
       lr: 1e-4
       epochs: 2000
       factors: 64
-      batch_size: 128
+      batch_size: 256
       g: 1e-4
       l: [loguniform, -2.30258509299, 1.2527629685]
       w1: [loguniform, -18.420680744, 0]
