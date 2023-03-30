@@ -350,7 +350,7 @@ class DGCFModel(torch.nn.Module, ABC):
             sampled_embeddings = torch.cat((cor_u_g_embeddings.to(self.device), cor_i_g_embeddings.to(self.device)),
                                            dim=0)
             for intent in range(self.intents - 1):
-                ui_factor_embeddings = torch.split(sampled_embeddings, self.intents, 1)
+                ui_factor_embeddings = torch.chunk(sampled_embeddings, self.intents, 1)
                 loss_ind += self.get_loss_ind(ui_factor_embeddings[intent].to(self.device),
                                               ui_factor_embeddings[intent + 1].to(self.device))
             loss_ind /= ((self.intents + 1.0) * self.intents / 2)
