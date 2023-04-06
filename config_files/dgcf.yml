@@ -29,9 +29,9 @@ experiment:
       batch_size: 256
       l_w_bpr: [loguniform, 1.60943791243, 1.94591014906]
       l_w_ind: [loguniform, 1.60943791243, 1.94591014906]
-      n_layers: [choice, [1, 2, 3, 4]]
+      n_layers: [choice, [1, 2]]
       routing_iterations: 2
-      intents: [choice, [2, 4, 8, 16]]
+      intents: [choice, [4, 8]]
       seed: 42
       early_stopping:
         patience: 40
