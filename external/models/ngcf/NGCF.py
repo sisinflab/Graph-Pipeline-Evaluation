@@ -10,6 +10,7 @@ __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it, daniele.malite
 from tqdm import tqdm
 import numpy as np
 import torch
+import random
 import os
 
 from elliot.utils.write import store_recommendation
@@ -86,6 +87,10 @@ class NGCF(RecMixin, BaseRecommenderModel):
             ("_normalize", "normalize", "normalize", True, bool, None)
         ]
         self.autoset_params()
+
+        random.seed(self._seed)
+        np.random.seed(self._seed)
+        torch.manual_seed(self._seed)
 
         self._sampler = Sampler(self._data.i_train_dict, self._batch_size, self._seed)
         if self._batch_size < 1:
