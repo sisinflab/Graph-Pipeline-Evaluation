@@ -22,6 +22,7 @@ experiment:
         validation_rate: 190
         validation_metric: Recall@20
         restore: False
+        save_recs: True
         write_best_iterations: True
       lr: 0.001313040990458504
       epochs: 190
