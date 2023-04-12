@@ -27,8 +27,8 @@ experiment:
       epochs: 3000
       factors: 64
       batch_size: 512
-      l_w_bpr: [loguniform, 1.60943791243, 1.94591014906]
-      l_w_ind: [loguniform, 1.60943791243, 1.94591014906]
+      l_w_bpr: [loguniform, -11.512925465, -6.90775527898]
+      l_w_ind: [loguniform, -11.512925465, -6.90775527898]
       n_layers: [choice, [1, 2]]
       routing_iterations: 2
       intents: [choice, [4, 8]]
