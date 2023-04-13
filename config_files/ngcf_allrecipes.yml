@@ -19,13 +19,13 @@ experiment:
         hyper_max_evals: 20
         verbose: True
         save_weights: False
-        validation_rate: 100
+        validation_rate: 3
         validation_metric: Recall@20
         save_recs: True
         restore: False
         write_best_iterations: True
       lr: 0.0010492631473907471
-      epochs: 100
+      epochs: 3
       factors: 64
       batch_size: 128
       l_w: 0.08623551848300251
