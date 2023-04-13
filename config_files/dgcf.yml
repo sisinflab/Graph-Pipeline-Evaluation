@@ -26,7 +26,7 @@ experiment:
       lr: [loguniform, -9.21034037198, -6.90775527898]
       epochs: 3000
       factors: 64
-      batch_size: 256
+      batch_size: 512
       l_w_bpr: [loguniform, -11.512925465, -6.90775527898]
       l_w_ind: [loguniform, -11.512925465, -6.90775527898]
       n_layers: [choice, [1, 2]]
