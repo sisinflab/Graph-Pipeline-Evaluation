@@ -4,7 +4,6 @@ experiment:
   data_config:
     strategy: fixed
     train_path: ../data/{0}/train.tsv
-    validation_path: ../data/{0}/validation.tsv
     test_path: ../data/{0}/test.tsv
   top_k: 20
   evaluation:
