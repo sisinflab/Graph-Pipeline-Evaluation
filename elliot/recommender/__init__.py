@@ -12,3 +12,5 @@ from .generic import ProxyRecommender
 from .knn import ItemKNN, UserKNN, AttributeItemKNN, AttributeUserKNN
 from .graph_based import RP3beta
 from .autoencoers import EASER
+from .unpersonalized import MostPop, Random
+
