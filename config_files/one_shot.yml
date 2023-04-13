@@ -15,7 +15,7 @@ experiment:
     Random:
       meta:
         save_recs: True
-    external.MostPop:
+    MostPop:
       meta:
         verbose: True
         save_recs: True
