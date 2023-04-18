@@ -9,6 +9,8 @@ __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it'
 
 import time
 
+import scipy
+
 import numpy as np
 from sklearn.utils.extmath import safe_sparse_dot
 
@@ -81,7 +83,7 @@ class EASER(RecMixin, BaseRecommenderModel):
         item_popularity = np.ediff1d(self._train.tocsc().indptr)
         self._similarity_matrix[diagonal_indices] = item_popularity + self._l2_norm
 
-        P = (np.linalg.inv(self._similarity_matrix.astype(np.single))).astype(np.double)
+        P = (scipy.sparse.linalg.inv(self._similarity_matrix.astype(np.single))).astype(np.double)
 
         self._similarity_matrix = P / (-np.diag(P))
 
