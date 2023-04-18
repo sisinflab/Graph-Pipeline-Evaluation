@@ -13,12 +13,12 @@ experiment:
     complex_metrics:
       - metric: clustered_Recall
         user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/allrecipes/users_deg_3.tsv
+        user_clustering_file: ../data/bookcrossing/users_deg_3.tsv
       - metric: clustered_nDCG
         user_clustering_name: WarmColdUsers
-        user_clustering_file: ../data/allrecipes/users_deg_3.tsv
+        user_clustering_file: ../data/bookcrossing/users_deg_3.tsv
   gpu: -1
   external_models_path: ../external/models/__init__.py
   models:
     RecommendationFolder:
-      folder: ./results/allrecipes/recs
+      folder: ./results/bookcrossing/recs
