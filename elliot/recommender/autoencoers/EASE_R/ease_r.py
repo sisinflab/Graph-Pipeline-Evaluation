@@ -83,7 +83,7 @@ class EASER(RecMixin, BaseRecommenderModel):
         item_popularity = np.ediff1d(self._train.tocsc().indptr)
         self._similarity_matrix[diagonal_indices] = item_popularity + self._l2_norm
 
-        P = (scipy.linalg.inv(self._similarity_matrix.astype(np.float16))).astype(np.double)
+        P = np.linalg.solve(self._similarity_matrix.astype(np.float16), np.eye((self._similarity_matrix.astype(np.float16)).shape[0]))
 
         self._similarity_matrix = P / (-np.diag(P))
 
